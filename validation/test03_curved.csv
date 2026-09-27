@@ -1,4 +1,4 @@
-v_cmd_mps,w_cmd_radps,physical_r_act_m,initial_r_act_m,final_r_act_m,abs_sim_to_real_error_reduction_pct,physical_r_act_over_r_cmd,final_r_act_over_r_cmd,final_over_physical_ratio_ratio,source_reference
+v_cmd_mps,w_cmd_radps,physical_r_act_m,initial_r_act_m,final_r_act_m,abs_sim_to_real_error_reduction_pct,physical_r_act_over_r_cmd,final_r_act_over_r_cmd,final_to_physical_radius_ratio_ratio,source_reference
 0.2,0.2,1.25,6.59,1.22,99.5,1.25,1.223,0.978,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
 0.2,0.4,0.85,9.89,0.66,98,1.69,1.323,0.783,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
 0.2,0.6,0.63,5.75,0.43,96.1,1.89,1.298,0.687,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
