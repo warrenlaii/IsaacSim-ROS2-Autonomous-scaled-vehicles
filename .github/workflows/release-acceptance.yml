@@ -88,7 +88,8 @@ jobs:
 
               if cjk.search(text):
                   failures.append(f"CJK text found: {path}")
-              if "/home/cast/" in text:
+              forbidden_local_path = "/home/" + "cast/"
+              if forbidden_local_path in text:
                   failures.append(f"Hard-coded local path found: {path}")
 
           if failures:
