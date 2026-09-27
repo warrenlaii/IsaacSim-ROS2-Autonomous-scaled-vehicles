@@ -36,7 +36,6 @@ The repository has not yet been tagged as `v1.0.0-thesis`.
 - Duplicate analyzer test copy and superseded batch wrapper from the formal handover set.
 - Empty `.gitkeep` placeholders from populated asset directories.
 - README references to directories/files that are not part of the delivered repository.
-- Redundant placeholders from populated asset directories.
 
 ### Repository hygiene
 
