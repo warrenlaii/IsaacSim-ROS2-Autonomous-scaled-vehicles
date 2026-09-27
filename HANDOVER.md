@@ -200,7 +200,14 @@ At minimum, the simulation handover contract expects:
 
 The wheel-command debug topic is diagnostic only and is not part of the control path.
 
-The Lane Camera Image and CameraInfo streams were verified in the thesis, but the exact deployed camera namespace is intentionally not treated as a fixed contract in `config/ros2_topics.yaml`. Use `ros2 topic list` to confirm the names in the delivered scene.
+The verified Lane Camera topics are:
+
+```text
+/camera/image_raw_lane
+/camera/camera_info
+```
+
+Use `ros2 topic list` to confirm that they are present in the delivered runtime before collecting a new dataset.
 
 ### Check publication rates
 
@@ -317,7 +324,24 @@ Do not treat a new run as a thesis result unless the complete test condition and
 
 ---
 
-## 10. Locate and preserve recorded data
+## 10. Historical data provenance and maintained scripts
+
+The processed thesis results in `validation/` are historical results, not newly recomputed outputs from the cleaned handover scripts.
+
+The frozen project record identifies the thesis-era baseline tooling as:
+
+- controller: `cobraflex_test_control v12`;
+- generic analyzer: `cobraflex_rosbag_analyzer v25`.
+
+The scripts currently under `ros2/` are later maintained/cleaned handover versions with stable filenames. They preserve the analysis workflow but should **not** be treated as byte-identical copies of the exact programs used to create every historical thesis table.
+
+This distinction matters when reprocessing old recordings. Preserve the original raw bag, the historical result, and the current reprocessed result separately rather than silently replacing the thesis result.
+
+See `docs/data_provenance.md` for the source hierarchy and version boundaries.
+
+---
+
+## 11. Locate and preserve recorded data
 
 Raw rosbag2 data are deliberately excluded from Git through `.gitignore`.
 
@@ -347,7 +371,7 @@ For traceability, preserve at least:
 
 ---
 
-## 11. Analyse one bag interactively
+## 12. Analyse one bag interactively
 
 The single-bag GUI analyzer is:
 
@@ -367,7 +391,7 @@ The maintained analyzer distinguishes simulation/header time from rosbag arrival
 
 ---
 
-## 12. Analyse a batch from the command line
+## 13. Analyse a batch from the command line
 
 The recommended batch-analysis entry point is:
 
@@ -426,7 +450,7 @@ Historical analyzer versions used 0.154 m in a track-related calculation. Reproc
 
 ---
 
-## 13. Compare against the processed thesis validation results
+## 14. Compare against the processed thesis validation results
 
 The compact reference results are under:
 
@@ -471,7 +495,7 @@ This complete-scene result demonstrates repeatability conditional on the observe
 
 ---
 
-## 14. RoadRunner/OpenDRIVE provenance boundary
+## 15. RoadRunner/OpenDRIVE provenance boundary
 
 The repository contains the current logical road-network handover under:
 
@@ -492,7 +516,7 @@ Therefore:
 
 ---
 
-## 15. Expected final acceptance state
+## 16. Expected final acceptance state
 
 A clean handover should be considered operational when a new user can complete all of the following:
 
@@ -514,7 +538,7 @@ If any item fails, do not modify the formal baseline until the failure has been 
 
 ---
 
-## 16. Troubleshooting
+## 17. Troubleshooting
 
 ### USD files are tiny pointer files
 
@@ -568,7 +592,7 @@ Point `cobraflex_analyzer.py` at the directory that contains the rosbag2 experim
 
 ---
 
-## 17. Change-control rule
+## 18. Change-control rule
 
 The formal thesis baseline is a historical research deliverable.
 

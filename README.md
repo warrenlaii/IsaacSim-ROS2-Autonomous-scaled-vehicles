@@ -1,8 +1,10 @@
 # CobraFlex Digital Twin in Isaac Sim
 
-**ROS 2-Compatible Digital Twin Platform for a 1:14 Scaled Autonomous Vehicle**
+**ROS 2-Compatible Digital Twin Platform for a 1:14 Scale Autonomous Vehicle**
 
 A research platform built with **NVIDIA Isaac Sim, PhysX, OpenUSD, MathWorks RoadRunner, and ROS 2** for scaled autonomous-vehicle simulation, Sim-to-Real evaluation, and future learning-based control research.
+
+**Start here:** [Operational handover](HANDOVER.md) · [Processed validation](validation/README.md) · [Change log](CHANGELOG.md)
 
 <p align="center">
   <img src="docs/images/cobraflex_vehicle_in_scene.png"
@@ -98,7 +100,6 @@ IsaacSim-ROS2-Autonomous-scaled-vehicles/
 ├── README.md
 ├── HANDOVER.md
 ├── CHANGELOG.md
-├── LICENSE
 │
 ├── assets/
 │   ├── vehicle/
@@ -126,7 +127,6 @@ IsaacSim-ROS2-Autonomous-scaled-vehicles/
 │   ├── docs/
 │   └── README.md
 │
-├── calibration/
 ├── validation/
 │   ├── README.md
 │   ├── sim_to_real_summary.csv
@@ -135,9 +135,9 @@ IsaacSim-ROS2-Autonomous-scaled-vehicles/
 │   ├── test04_rotation.csv
 │   ├── scene_regression.csv
 │   └── ros2_acceptance.csv
-├── docs/
-│   └── images/
-└── thesis/
+└── docs/
+    ├── data_provenance.md
+    └── images/
 ```
 
 Historical development files, obsolete USD variants, and large raw ROS bag recordings should remain outside the formal baseline package unless explicitly archived for traceability.
@@ -146,18 +146,15 @@ Historical development files, obsolete USD variants, and large raw ROS bag recor
 
 ## Requirements
 
-### Simulation
+### Simulation workstation
 
+- **Ubuntu 24.04.4 LTS**
 - **NVIDIA Isaac Sim 6.0.0**
-- PhysX
-- OpenUSD
+- **ROS 2 Jazzy Jalisco**
+- **Python 3.12**
+- PhysX / OpenUSD
 - Isaac Sim ROS 2 Bridge
-
-### Middleware
-
-- ROS 2
-- `rosbag2`
-- MCAP support where required by the analysis workflow
+- `rosbag2` with MCAP support
 - Git LFS for the formal USD assets
 
 ### Environment Generation
@@ -167,9 +164,7 @@ Historical development files, obsolete USD variants, and large raw ROS bag recor
 
 ### Analysis
 
-Python-based analysis scripts are used for calibration and validation. Required Python packages should be documented alongside the final analysis tools.
-
-> Record the exact ROS 2 distribution and workstation setup in `docs/installation.md` before external release.
+Python analysis dependencies and invocation are documented in [`ros2/README.md`](ros2/README.md). The end-to-end workstation procedure is documented in [`HANDOVER.md`](HANDOVER.md).
 
 ---
 
@@ -183,7 +178,7 @@ ADMIT14_RoadRunner_Map_v1.usd
 ADMIT14_Integrated_Scene_v1.usd
 ```
 
-Recommended repository locations:
+Repository locations:
 
 ```text
 assets/vehicle/ADMIT14_cobraflex_baseline_v1.usd
@@ -266,14 +261,14 @@ The final architecture includes the following core interfaces.
 | `/joint_states` | Simulation → ROS 2 | Wheel-joint states |
 | `/tf` | Simulation → ROS 2 | Dynamic transforms |
 | IMU topic | Simulation → ROS 2 | Simulated inertial data |
-| Lane Camera Image | Simulation → ROS 2 | RGB image stream |
-| Lane Camera `CameraInfo` | Simulation → ROS 2 | Camera calibration/projection information |
+| `/camera/image_raw_lane` | Simulation → ROS 2 | Lane Camera RGB image stream |
+| `/camera/camera_info` | Simulation → ROS 2 | Lane Camera calibration/projection information |
 | `/scan` | Simulation → ROS 2 | LiDAR scan output |
 | `/cobraflex/wheel_cmd_debug` | Simulation → ROS 2 | Wheel-command diagnostics |
 
 The physics simulation runs at **240 Hz**. The state/TF/joint publication chain uses a Gate step of 4, corresponding to **60 Hz simulation time**.
 
-Sensor namespaces may depend on the final scene configuration. Record exact deployed topic names in `config/ros2_topics.yaml`.
+The verified Lane Camera topic names and other core handover topics are recorded in `config/ros2_topics.yaml`. Supplementary sensor namespaces remain platform dependent.
 
 ---
 
@@ -290,7 +285,7 @@ The formal thesis baseline uses the following core configuration.
 | Articulation iterations | 32 position / 1 velocity |
 | Vehicle mass | 3.50 kg |
 | Wheelbase | 0.154 m |
-| Track width | approx. 0.153 m |
+| Wheel-centre separation | 0.153 m |
 | Wheel radius | 0.03725 m |
 | Joint drive | Force drive |
 | Joint stiffness | 0 |
@@ -298,11 +293,7 @@ The formal thesis baseline uses the following core configuration.
 | Max drive force | 1.8 N·m per wheel |
 | State / TF / joint publication | 60 Hz |
 
-The formal USD assets are the authoritative delivered configuration. A machine-readable summary should additionally be maintained in:
-
-```text
-config/baseline.yaml
-```
+The formal USD assets are the authoritative delivered configuration. The corresponding machine-readable handover summary is maintained in `config/baseline.yaml`.
 
 > **Important:** The **0.08 N·m** Max Drive Force configuration was used only as a diagnostic ablation. It is **not** the formal thesis baseline.
 
@@ -353,21 +344,9 @@ Future calibration or controller work should therefore preserve the thesis basel
 
 Large raw ROS bag recordings are intentionally excluded from the main Git repository.
 
-The handover package should contain:
+The repository contains configuration files, maintained analysis/control scripts, processed validation summaries, formal assets, and provenance documentation. Large raw recordings remain outside Git in the project or institutional archive.
 
-- configuration files;
-- experiment metadata;
-- analysis scripts;
-- processed validation summaries;
-- key plots and figures;
-- small representative datasets where useful;
-- provenance information linking results to controller, analyzer, USD, and physics versions.
-
-Raw recordings should remain in the project or institutional archive and be referenced from:
-
-```text
-docs/data_provenance.md
-```
+Historical data/tool lineage and the distinction between thesis-era scripts and the cleaned handover scripts are documented in [`docs/data_provenance.md`](docs/data_provenance.md).
 
 The core reproducibility rule is:
 
@@ -411,11 +390,11 @@ A release is considered usable when a new user can, using only the repository do
 
 This repository accompanies the Master's thesis:
 
-> **Design and Implementation of a ROS 2-Compatible Digital Twin Platform for 1:14 Scaled Autonomous Vehicles in Reinforcement Learning**
+> **Design and Implementation of a ROS 2-Compatible Digital Twin Platform for 1:14 Scale Autonomous Vehicles for Reinforcement Learning**
 
 | Role | Information |
 | --- | --- |
-| **Author** | Hwa-Luen,Lai (Warren) |
+| **Author** | Hwa-Luen Lai (Warren) |
 | **Supervisor** | Prof. Dr.-Ing. Ralf Schüler |
 | **Institution** | Hochschule Esslingen |
 | **Programme** | Automotive Systems, M.Eng. |
@@ -431,8 +410,8 @@ If this repository or the associated work is used in academic research, please c
 
 ```bibtex
 @mastersthesis{lai2026cobraflex,
-  author = {Hwa-Luen,Lai},
-  title  = {Design and Implementation of a ROS 2-Compatible Digital Twin Platform for 1:14 Scaled Autonomous Vehicles for Reinforcement Learning},
+  author = {Lai, Hwa-Luen},
+  title  = {Design and Implementation of a ROS 2-Compatible Digital Twin Platform for 1:14 Scale Autonomous Vehicles for Reinforcement Learning},
   school = {Hochschule Esslingen},
   year   = {2026}
 }
@@ -456,7 +435,7 @@ Before any public release, redistribution rights must be verified for:
 - external software components;
 - datasets and recorded experimental material.
 
-A final `LICENSE` file should be added only after these rights and the intended licensing terms have been confirmed.
+No `LICENSE` file is included at present. Add one only after these rights and the intended licensing terms have been confirmed.
 
 ---
 

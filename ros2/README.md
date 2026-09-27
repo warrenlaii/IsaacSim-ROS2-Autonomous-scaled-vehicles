@@ -75,7 +75,7 @@ The control tool requires a sourced ROS 2 environment with `rclpy` and the stand
 
 The analysis tools require Python 3 with `rosbags`, NumPy, pandas, openpyxl, Matplotlib, and PyQt5. SciPy is optional for filtering, and PyYAML is required only when YAML configuration files are used.
 
-Both the controller and generic analyzer can optionally import a colocated `cobraflex_topics.py`. If it is not present, the verified fallback topic definitions embedded in the scripts are used.
+Both the controller and generic analyzer can optionally import a colocated `cobraflex_topics.py`. That override file is not part of this handover repository; when it is absent, the fallback topic definitions embedded in the maintained scripts are used.
 
 ## Handover conventions
 
@@ -87,6 +87,6 @@ The final thesis geometry used by the deep analyzer is:
 - wheel-centre separation for controller/analysis: 0.153 m
 - wheelbase: 0.154 m
 
-Historical analyzer versions used 0.154 m for the track-related calculation. Re-running historical bags with the handover analyzer can therefore produce a small change in track-dependent derived KPIs.
+Historical analyzer versions used 0.154 m for a track-related calculation. Re-running historical bags with the maintained handover analyzer can therefore produce a small change in track-dependent derived KPIs. Historical thesis results and current reprocessed results should be kept distinct; see [`../docs/data_provenance.md`](../docs/data_provenance.md).
 
 Raw rosbag2 recordings are not stored in this repository. Keep raw `.mcap`, `.db3`, and rosbag2 directories in the project or institutional archive and commit only scripts and processed handover results.

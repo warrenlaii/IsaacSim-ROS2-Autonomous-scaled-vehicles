@@ -21,6 +21,7 @@ topics:
       name: /odom_truth
       direction: simulation_to_ros2
       expected_rate_hz: 60
+      semantics: simulation_ground_truth
     joint_states:
       name: /joint_states
       direction: simulation_to_ros2
@@ -31,10 +32,20 @@ topics:
       expected_rate_hz: 60
 
   perception:
+    lane_camera_image:
+      name: /camera/image_raw_lane
+      direction: simulation_to_ros2
+      expected_rate_hz_sim_time: 60
+      status: verified
+    lane_camera_info:
+      name: /camera/camera_info
+      direction: simulation_to_ros2
+      expected_rate_hz_sim_time: 60
+      status: verified
     lidar_scan:
       name: /scan
       direction: simulation_to_ros2
-      status: verified
+      status: verified_interface_scope
 
   diagnostics:
     wheel_command:
@@ -43,5 +54,6 @@ topics:
       purpose: commanded_wheel_velocity_debug
 
 notes:
-  - "Lane Camera image and CameraInfo were verified in the final handover contract, but their exact namespace is intentionally not hard-coded here until audited directly from the delivered scene."
+  - "Lane Camera transport, payload structure, and simulation-time timestamp integrity were verified; perception equivalence was outside thesis scope."
+  - "The /scan interface was verified for ROS 2 transport, frame, angular coverage, and payload structure; physical-sensor equivalence was not established."
   - "The wheel-command debug topic is diagnostic and is not part of the vehicle control path."

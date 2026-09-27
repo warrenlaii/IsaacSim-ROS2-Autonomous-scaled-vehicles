@@ -25,7 +25,7 @@ The files follow the reporting rules used in the final thesis:
 
 ## Source hierarchy
 
-The final thesis is the primary source for the published comparison tables and ROS 2 acceptance statements. The frozen `Master_v32_0812` calibration workbook is used where the handover benefits from more detailed processed values, especially the Test 03 radius-ratio grid and the formal scene-regression record.
+The final thesis is the primary source for the published comparison tables and ROS 2 acceptance statements. The frozen `Master_v32_0812` calibration workbook is used where the handover benefits from more detailed processed values, especially the Test 03 radius-ratio grid and the formal scene-regression record. The repository-level source and tool lineage is documented in [`../docs/data_provenance.md`](../docs/data_provenance.md).
 
 The simulation baseline represented here is the frozen thesis baseline. The RoadRunner/OpenDRIVE exchange artifact currently delivered under `roadrunner/OpenDRIVE/` includes a later 2026-08-16 Junction 63 repair. This directory does **not** claim that the historical validation campaigns were rerun against that later OpenDRIVE export; historical experiment results remain tied to their recorded thesis configuration.
 
