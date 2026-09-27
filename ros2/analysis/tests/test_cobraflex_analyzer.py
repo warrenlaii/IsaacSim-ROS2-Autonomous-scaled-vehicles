@@ -27,7 +27,9 @@ import numpy as np
 import pandas as pd
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+ANALYSIS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ANALYSIS_DIR not in sys.path:
+    sys.path.insert(0, ANALYSIS_DIR)
 
 # A plain import, not importlib.spec_from_file_location(): the module
 # defines dataclasses under `from __future__ import annotations`, whose
