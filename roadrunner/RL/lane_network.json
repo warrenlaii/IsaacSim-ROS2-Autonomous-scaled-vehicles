@@ -1,0 +1,3323 @@
+{
+  "schema_version": 1,
+  "description": "Directed driving-lane topology and lane-centreline metadata for the CobraFlex RoadRunner handover map.",
+  "source": {
+    "geojson": "../GeoJSON/ADMIT14_RoadRunner_Map_v1.geojson",
+    "opendrive": "../OpenDRIVE/ADMIT14_RoadRunner_Map_v1.xodr",
+    "derivation": "Driving Lane LineString features and their RoadRunner predecessor/successor metadata. Backward-travel lanes are reoriented so topology follows vehicle travel direction."
+  },
+  "coordinate_frame": {
+    "name": "RoadRunner local metric frame",
+    "units": "m",
+    "axis": "x/y/z",
+    "conversion_from_geojson": "WGS84 local conversion at origin: x = lon_deg * 111319.49079327357; y = lat_deg * 110574.27582159435; z unchanged."
+  },
+  "statistics": {
+    "driving_lanes": 130,
+    "forward_lanes": 72,
+    "backward_lanes": 58,
+    "directed_edges": 143,
+    "centreline_points": 863,
+    "max_successor_endpoint_gap_m": 0.000368849,
+    "logical_lane_ids_missing_from_opendrive": 0
+  },
+  "lanes": [
+    {
+      "id": "{02200d70-8145-380c-b8c7-a73c4f8ebaa6}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.92,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{7fbba338-806a-3254-bab8-1d5c1b9bc361}"
+      ],
+      "successors": [
+        "{f1a794ae-656d-3656-a0aa-51614ff70e98}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "46",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.650000069
+        }
+      ]
+    },
+    {
+      "id": "{02ded283-f52b-3fc2-b4e2-2dddf2bdb289}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.02,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{235949ca-80d5-3947-899f-cbbfd4e1d015}"
+      ],
+      "successors": [
+        "{2d9b7396-75ec-358f-a5f1-ba34b6bca5a4}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "55",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.500000026
+        }
+      ]
+    },
+    {
+      "id": "{02dfc126-3096-31ae-bd99-ce26c505d26f}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.232574,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{bfde17cd-2a65-3a42-b67c-6b3658f6f7f8}",
+        "{efebe81d-afa6-342a-848b-e545cda75a02}"
+      ],
+      "successors": [
+        "{97d85369-9c81-32c9-b684-1fb5b9835940}",
+        "{035e6481-1b49-3a20-a9a8-ed4f89ce62d2}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "10",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{035e6481-1b49-3a20-a9a8-ed4f89ce62d2}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.051616,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{02dfc126-3096-31ae-bd99-ce26c505d26f}"
+      ],
+      "successors": [
+        "{6e1f1f12-282d-3d66-a0c4-a7622a684b9f}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "320",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.645149146
+        }
+      ]
+    },
+    {
+      "id": "{0863c21f-0a5d-39f8-9f83-8664a19dd3ca}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.352881,
+      "centreline_point_count": 13,
+      "predecessors": [
+        "{aac5c63d-4c7d-3bb4-a30d-fa6f3c312af7}"
+      ],
+      "successors": [
+        "{becf583d-91ca-3e65-ac66-f66089686169}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "93",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.311232979
+        },
+        {
+          "road_id": "194",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.311232979
+        }
+      ]
+    },
+    {
+      "id": "{0e958036-e9ea-3f34-ad72-7c42abb9dafc}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.005144,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{3a4ec57a-c1c6-34b1-918d-82c5f22986f8}"
+      ],
+      "successors": [
+        "{92534da4-da6b-33d9-9b33-3c8a294b3072}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "93",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        },
+        {
+          "road_id": "194",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        },
+        {
+          "road_id": "321",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{17f9fc39-fad1-30ff-b81d-b6876501008d}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.550125,
+      "centreline_point_count": 9,
+      "predecessors": [
+        "{ab0e36c9-40d8-3502-8e27-35c4be0cdce8}"
+      ],
+      "successors": [
+        "{6b249816-be3f-3c6d-a125-96bf25d13f79}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "69",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.807628848
+        }
+      ]
+    },
+    {
+      "id": "{1a617349-a7a8-3a90-ae83-1ed2be395acb}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.063023,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{278d42e4-a5fc-3026-aee9-78483516fd73}"
+      ],
+      "successors": [
+        "{30cc3cf6-75ca-3a2b-b980-0f8f4653d60d}",
+        "{23137bee-820e-35c9-ac6b-a2b0b0f41b3e}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "5",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{1c0d6342-89f9-3f21-97a1-b302c5a611c2}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.402584,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{251646c6-ab00-3c9c-86e8-4a18ec32fba7}"
+      ],
+      "successors": [
+        "{c5771a52-88b2-3751-8491-b0b3989db886}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "0",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{1e12637d-f37c-3239-a22d-4768bc623264}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 2.375668,
+      "centreline_point_count": 9,
+      "predecessors": [
+        "{238ee232-911b-3680-9140-764001a85f2a}"
+      ],
+      "successors": [
+        "{8ac7a352-1683-3a54-9a41-9cc2acd5d423}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "15",
+          "lane_section_index": 0,
+          "lane_id": 2,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{23137bee-820e-35c9-ac6b-a2b0b0f41b3e}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.274145,
+      "centreline_point_count": 15,
+      "predecessors": [
+        "{1a617349-a7a8-3a90-ae83-1ed2be395acb}"
+      ],
+      "successors": [
+        "{82e38702-6749-3f64-8322-9e294a1ba678}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "346",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.001703286
+        }
+      ]
+    },
+    {
+      "id": "{2342449c-9957-3f3e-a5cb-cdba7c6edd2c}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.019546,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{9153a3be-1116-3149-9e76-3f7f86502e6a}"
+      ],
+      "successors": [
+        "{d9edb4c4-9f70-366e-b2bd-d34ab26a217b}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "321",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.601687288
+        }
+      ]
+    },
+    {
+      "id": "{235949ca-80d5-3947-899f-cbbfd4e1d015}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.07,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{5792a6d9-dc0d-3e85-a96c-2bdf591270d7}"
+      ],
+      "successors": [
+        "{7aa0615d-0a7d-3265-ac8e-33a1d5abffa5}",
+        "{02ded283-f52b-3fc2-b4e2-2dddf2bdb289}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "52",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.429999985
+        },
+        {
+          "road_id": "55",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.429999985
+        }
+      ]
+    },
+    {
+      "id": "{238ee232-911b-3680-9140-764001a85f2a}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 1.885819,
+      "centreline_point_count": 14,
+      "predecessors": [],
+      "successors": [
+        "{1e12637d-f37c-3239-a22d-4768bc623264}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "2",
+          "lane_section_index": 0,
+          "lane_id": 2,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{251646c6-ab00-3c9c-86e8-4a18ec32fba7}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.164034,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{a30a4456-8c80-34b5-bde4-f43494272aaf}",
+        "{6789762e-ebe9-33e6-8167-d529a7b5a473}"
+      ],
+      "successors": [
+        "{1c0d6342-89f9-3f21-97a1-b302c5a611c2}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "24",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        },
+        {
+          "road_id": "26",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.67958981
+        }
+      ]
+    },
+    {
+      "id": "{278d42e4-a5fc-3026-aee9-78483516fd73}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 2.223145,
+      "centreline_point_count": 14,
+      "predecessors": [
+        "{a83713ba-fed9-3654-a4f6-d0973bec2c3b}"
+      ],
+      "successors": [
+        "{1a617349-a7a8-3a90-ae83-1ed2be395acb}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "4",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{2a9bc542-0e7f-32ab-a1cd-716779783e42}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.063342,
+      "centreline_point_count": 22,
+      "predecessors": [
+        "{4688b820-5ead-3b30-b8f7-b9edf48a7c08}"
+      ],
+      "successors": [
+        "{8842f179-8138-3b45-bf5d-dc904892bd2e}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "306",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.185299497
+        }
+      ]
+    },
+    {
+      "id": "{2d34777d-b04a-3612-be64-f7a45c388396}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.66775,
+      "centreline_point_count": 7,
+      "predecessors": [],
+      "successors": [
+        "{858ddf59-0553-3bfe-8a4a-007d9519a5f6}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "12",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{2d9b7396-75ec-358f-a5f1-ba34b6bca5a4}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 3.062053,
+      "centreline_point_count": 19,
+      "predecessors": [
+        "{02ded283-f52b-3fc2-b4e2-2dddf2bdb289}"
+      ],
+      "successors": [
+        "{33a6ca6a-93cc-39b6-a711-e7d7ff017342}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "55",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.519999892
+        }
+      ]
+    },
+    {
+      "id": "{2dd62432-f786-3a1a-a110-b3e948be9a8e}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.009372,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{7aa0615d-0a7d-3265-ac8e-33a1d5abffa5}",
+        "{82bb4345-b8e5-3140-9bef-502824194b4c}"
+      ],
+      "successors": [
+        "{d37cd5d9-6651-33c9-ae06-945b4ac67729}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "3",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{2e5ac310-6ac1-3540-9344-1ce3ddefd2cf}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 2.607767,
+      "centreline_point_count": 15,
+      "predecessors": [
+        "{ee9b3651-b3e0-3be6-9a67-7f8f91255d77}"
+      ],
+      "successors": [
+        "{e3a70a5e-f0c4-35cd-bb9e-10ab5c9a61eb}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "4",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{2fe6aa94-1510-3275-b95b-4b9552801f3b}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.021689,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{a3bfca82-750c-358f-a988-00ee20f634d4}"
+      ],
+      "successors": [
+        "{b624d53f-88ef-3e22-81a1-23351da1f4af}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "32",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0030226
+        }
+      ]
+    },
+    {
+      "id": "{30cc3cf6-75ca-3a2b-b980-0f8f4653d60d}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.197985,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{1a617349-a7a8-3a90-ae83-1ed2be395acb}"
+      ],
+      "successors": [
+        "{b1ea243f-1da3-3595-b06c-17b96d4fe95b}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "334",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.872015095
+        }
+      ]
+    },
+    {
+      "id": "{30e9a4a9-d292-369e-8c47-af8817e7bee2}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 2.845242,
+      "centreline_point_count": 16,
+      "predecessors": [
+        "{46074810-9d02-30c5-a7f2-622cd6212e3e}"
+      ],
+      "successors": [
+        "{5e908d81-9ee6-3afb-b55c-13d1d315612b}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "102",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.263905423
+        }
+      ]
+    },
+    {
+      "id": "{317261be-5a4c-36c7-962d-a6c3b040e2fb}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.657935,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{c9e82a50-36a6-3781-a258-001c7d22f858}"
+      ],
+      "successors": [
+        "{9d6d87d3-9ff9-3441-899b-d20064845bdb}",
+        "{90a5fd41-0552-3aa1-89b4-08079c2711d8}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "93",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.594621933
+        },
+        {
+          "road_id": "135",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.499530627
+        },
+        {
+          "road_id": "143",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.499530627
+        },
+        {
+          "road_id": "194",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.594621933
+        },
+        {
+          "road_id": "223",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.657244891
+        },
+        {
+          "road_id": "232",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.657244891
+        }
+      ]
+    },
+    {
+      "id": "{33a6ca6a-93cc-39b6-a711-e7d7ff017342}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 2.522896,
+      "centreline_point_count": 10,
+      "predecessors": [
+        "{f1a794ae-656d-3656-a0aa-51614ff70e98}",
+        "{2d9b7396-75ec-358f-a5f1-ba34b6bca5a4}"
+      ],
+      "successors": [
+        "{9f8b1b7e-0b59-3fc0-8bd6-5331d2183088}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "17",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{342ce16e-c729-3950-8d5b-40b90658ec0e}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 2.328076,
+      "centreline_point_count": 9,
+      "predecessors": [
+        "{f3bfd945-629c-378b-895e-11ad350d0e17}"
+      ],
+      "successors": [
+        "{bfde17cd-2a65-3a42-b67c-6b3658f6f7f8}",
+        "{7632f752-06f5-3494-804d-715cd858c96c}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "17",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{3a24439d-fac6-3a8b-84c4-c7d9a74c4ce3}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.530396,
+      "centreline_point_count": 6,
+      "predecessors": [
+        "{4688b820-5ead-3b30-b8f7-b9edf48a7c08}"
+      ],
+      "successors": [
+        "{becf583d-91ca-3e65-ac66-f66089686169}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "135",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.283228012
+        },
+        {
+          "road_id": "223",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.440942276
+        }
+      ]
+    },
+    {
+      "id": "{3a4ec57a-c1c6-34b1-918d-82c5f22986f8}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.688767,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{b1fa3ebf-dd85-38f4-ac33-f4b35ecfed00}"
+      ],
+      "successors": [
+        "{0e958036-e9ea-3f34-ad72-7c42abb9dafc}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "9",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{3f396bee-445b-3efa-bcfb-a8862c7904ec}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.543723,
+      "centreline_point_count": 5,
+      "predecessors": [
+        "{dbf76e61-e450-32e2-b26b-4b1fd1dc9ddd}"
+      ],
+      "successors": [
+        "{61233b2c-e5d4-336b-b31b-0463a10b0e9c}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "68",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.263905423
+        }
+      ]
+    },
+    {
+      "id": "{3f89e5c6-67a5-3601-9668-658e157d4b2a}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.005144,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{c7bd3668-1afc-3494-9734-04e5ae57e5f1}"
+      ],
+      "successors": [
+        "{4688b820-5ead-3b30-b8f7-b9edf48a7c08}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "135",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 3.79747039
+        },
+        {
+          "road_id": "143",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 3.79747039
+        },
+        {
+          "road_id": "223",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 3.955184654
+        },
+        {
+          "road_id": "232",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 3.955184654
+        },
+        {
+          "road_id": "306",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.288448695
+        }
+      ]
+    },
+    {
+      "id": "{40138542-df3a-3174-9d36-9d5838c99066}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.273279,
+      "centreline_point_count": 4,
+      "predecessors": [
+        "{8f527a58-8675-3da7-8125-b96c43528e73}"
+      ],
+      "successors": [
+        "{dbf76e61-e450-32e2-b26b-4b1fd1dc9ddd}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "68",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.357753493
+        }
+      ]
+    },
+    {
+      "id": "{411e73c7-9247-3a25-b8b6-da9c43abd266}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.197985,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{54023330-459e-323c-beae-81df9fbde295}",
+        "{e33820e6-6026-33e3-b139-9fc2201d57ef}"
+      ],
+      "successors": [
+        "{ee9b3651-b3e0-3be6-9a67-7f8f91255d77}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "335",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.872015095
+        },
+        {
+          "road_id": "342",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{45692e26-a4ea-3c9f-8525-e6f36f09e683}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.566928,
+      "centreline_point_count": 4,
+      "predecessors": [
+        "{70d6262f-cf98-39bb-b6c6-cd47fcd6e62d}"
+      ],
+      "successors": [
+        "{a4b5ede2-e8ca-3587-a649-fe65ed2be61a}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "25",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.163984694
+        }
+      ]
+    },
+    {
+      "id": "{46074810-9d02-30c5-a7f2-622cd6212e3e}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.263905,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{9f8b1b7e-0b59-3fc0-8bd6-5331d2183088}"
+      ],
+      "successors": [
+        "{30e9a4a9-d292-369e-8c47-af8817e7bee2}",
+        "{ab0e36c9-40d8-3502-8e27-35c4be0cdce8}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "69",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        },
+        {
+          "road_id": "102",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{4688b820-5ead-3b30-b8f7-b9edf48a7c08}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.983846,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{3f89e5c6-67a5-3601-9668-658e157d4b2a}"
+      ],
+      "successors": [
+        "{2a9bc542-0e7f-32ab-a1cd-716779783e42}",
+        "{3a24439d-fac6-3a8b-84c4-c7d9a74c4ce3}",
+        "{6d16f79a-a358-3d03-beb1-20ebacd4dbdc}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "135",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.813624119
+        },
+        {
+          "road_id": "143",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.813624119
+        },
+        {
+          "road_id": "223",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.971338383
+        },
+        {
+          "road_id": "232",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.971338383
+        },
+        {
+          "road_id": "306",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.70269387
+        }
+      ]
+    },
+    {
+      "id": "{4b4556f1-8058-34cb-8204-7c82f1111c3c}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.216583,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{b0357da4-57a6-3bc8-bb34-6efb592d514e}"
+      ],
+      "successors": [
+        "{82e38702-6749-3f64-8322-9e294a1ba678}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "338",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.648592069
+        }
+      ]
+    },
+    {
+      "id": "{4b682127-60bd-33a1-966b-faf4f5c750d1}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.005144,
+      "centreline_point_count": 2,      "predecessors": [
+        "{65f523fc-2e5f-3565-9a92-f5c3cef60e28}"
+      ],
+      "successors": [
+        "{e2cee8a7-973a-3782-9787-da4bd95b164a}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "306",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        },
+        {
+          "road_id": "320",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{54023330-459e-323c-beae-81df9fbde295}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.522015,
+      "centreline_point_count": 5,
+      "predecessors": [
+        "{91ca2aef-915a-396f-8959-0f8db7572024}"
+      ],
+      "successors": [
+        "{411e73c7-9247-3a25-b8b6-da9c43abd266}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "335",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.35
+        }
+      ]
+    },
+    {
+      "id": "{54cc0275-26a1-36d3-a334-0918d57a2d24}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.051616,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{925d0f30-1e15-31b8-a611-04e99138d8fc}"
+      ],
+      "successors": [
+        "{c74caa02-a1ea-36d9-8821-d66fcfcf2aad}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "321",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.645149146
+        }
+      ]
+    },
+    {
+      "id": "{5792a6d9-dc0d-3e85-a96c-2bdf591270d7}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.43,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{c74caa02-a1ea-36d9-8821-d66fcfcf2aad}"
+      ],
+      "successors": [
+        "{235949ca-80d5-3947-899f-cbbfd4e1d015}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "52",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        },
+        {
+          "road_id": "55",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{57e997d7-f91a-3111-86b7-0829931085c7}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.398215,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{a4b5ede2-e8ca-3587-a649-fe65ed2be61a}",
+        "{c1384ad2-0c45-32d8-b136-73a8fd5fcdf2}"
+      ],
+      "successors": [
+        "{d8fca83d-2dac-3722-9cf9-fd42cd7d4916}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "1",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{5d6aa09d-674b-374e-893c-e5e51d84853d}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.009372,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{9477ae27-d456-30ad-83c6-9732581f9af6}"
+      ],
+      "successors": [
+        "{8255e25d-c32e-3396-9260-b0939027a091}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "3",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{5e908d81-9ee6-3afb-b55c-13d1d315612b}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.983846,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{97d85369-9c81-32c9-b684-1fb5b9835940}",
+        "{30e9a4a9-d292-369e-8c47-af8817e7bee2}",
+        "{78051476-0521-3558-87d5-ae9abf0d691f}"
+      ],
+      "successors": [
+        "{e2743ee3-0e29-34e0-8984-a16dfe626505}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "102",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.914997905
+        },
+        {
+          "road_id": "220",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.005143916
+        },
+        {
+          "road_id": "322",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.003151666
+        }
+      ]
+    },
+    {
+      "id": "{607562fd-74b5-35cf-aa7d-8a239f20bbc1}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.003023,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{a3655513-043c-337a-aecf-df92488f276e}"
+      ],
+      "successors": [
+        "{e0dbe6c2-0cd9-3ca7-a376-e74c2efc04f9}",
+        "{c1384ad2-0c45-32d8-b136-73a8fd5fcdf2}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "26",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        },
+        {
+          "road_id": "38",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{61233b2c-e5d4-336b-b31b-0463a10b0e9c}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.263905,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{3f396bee-445b-3efa-bcfb-a8862c7904ec}"
+      ],
+      "successors": [
+        "{f3bfd945-629c-378b-895e-11ad350d0e17}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "68",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{65f523fc-2e5f-3565-9a92-f5c3cef60e28}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.136089,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{8842f179-8138-3b45-bf5d-dc904892bd2e}"
+      ],
+      "successors": [
+        "{4b682127-60bd-33a1-966b-faf4f5c750d1}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "306",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.003062559
+        },
+        {
+          "road_id": "320",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.005143939
+        }
+      ]
+    },
+    {
+      "id": "{6789762e-ebe9-33e6-8167-d529a7b5a473}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.881234,
+      "centreline_point_count": 33,
+      "predecessors": [
+        "{e0dbe6c2-0cd9-3ca7-a376-e74c2efc04f9}"
+      ],
+      "successors": [
+        "{251646c6-ab00-3c9c-86e8-4a18ec32fba7}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "26",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.016725625
+        }
+      ]
+    },
+    {
+      "id": "{6b249816-be3f-3c6d-a125-96bf25d13f79}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.273279,
+      "centreline_point_count": 4,
+      "predecessors": [
+        "{9d6d87d3-9ff9-3441-899b-d20064845bdb}",
+        "{17f9fc39-fad1-30ff-b81d-b6876501008d}"
+      ],
+      "successors": [
+        "{f71960bf-7165-3ae5-b203-e04983359107}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "69",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.357753493
+        },
+        {
+          "road_id": "194",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 3.636521873
+        },
+        {
+          "road_id": "223",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        },
+        {
+          "road_id": "232",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{6d16f79a-a358-3d03-beb1-20ebacd4dbdc}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.530396,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{4688b820-5ead-3b30-b8f7-b9edf48a7c08}"
+      ],
+      "successors": [
+        "{becf583d-91ca-3e65-ac66-f66089686169}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "143",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.283228012
+        },
+        {
+          "road_id": "232",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.440942276
+        }
+      ]
+    },
+    {
+      "id": "{6e1f1f12-282d-3d66-a0c4-a7622a684b9f}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.004141,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{035e6481-1b49-3a20-a9a8-ed4f89ce62d2}"
+      ],
+      "successors": [
+        "{e1a3112b-e4c3-3bd5-92fd-6827419bcc2b}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "320",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.641007779
+        }
+      ]
+    },
+    {
+      "id": "{70d6262f-cf98-39bb-b6c6-cd47fcd6e62d}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.164132,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{858ddf59-0553-3bfe-8a4a-007d9519a5f6}"
+      ],
+      "successors": [
+        "{45692e26-a4ea-3c9f-8525-e6f36f09e683}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "25",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{7632f752-06f5-3494-804d-715cd858c96c}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 1.330695,
+      "centreline_point_count": 11,
+      "predecessors": [
+        "{342ce16e-c729-3950-8d5b-40b90658ec0e}"
+      ],
+      "successors": [
+        "{84c31fc3-f8c7-366c-a4f4-48e8186e65be}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "45",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.570000002
+        }
+      ]
+    },
+    {
+      "id": "{78051476-0521-3558-87d5-ae9abf0d691f}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 2.527301,
+      "centreline_point_count": 15,
+      "predecessors": [
+        "{8f527a58-8675-3da7-8125-b96c43528e73}"
+      ],
+      "successors": [
+        "{5e908d81-9ee6-3afb-b55c-13d1d315612b}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "220",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.988990187
+        }
+      ]
+    },
+    {
+      "id": "{7aa0615d-0a7d-3265-ac8e-33a1d5abffa5}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.185744,
+      "centreline_point_count": 12,
+      "predecessors": [
+        "{235949ca-80d5-3947-899f-cbbfd4e1d015}"
+      ],
+      "successors": [
+        "{2dd62432-f786-3a1a-a110-b3e948be9a8e}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "52",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.500000026
+        }
+      ]
+    },
+    {
+      "id": "{7aa3b7f6-14d4-324f-b814-3bfa8a5d683e}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 1.303583,
+      "centreline_point_count": 11,
+      "predecessors": [
+        "{dde3a446-09b7-392e-b739-06a50fc44f45}"
+      ],
+      "successors": [
+        "{840b03f1-d9bb-3da0-877e-6835bb5e1616}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "334",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{7d5647b7-d851-310a-846e-973bd0396fdc}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.190595,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{a902bcc4-cd8c-39b3-a497-b72c70289c47}",
+        "{b624d53f-88ef-3e22-81a1-23351da1f4af}"
+      ],
+      "successors": [
+        "{c7bd3668-1afc-3494-9734-04e5ae57e5f1}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "19",
+          "lane_section_index": 1,
+          "lane_id": 1,
+          "lane_section_s_m": 0.011009813,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{7fbba338-806a-3254-bab8-1d5c1b9bc361}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.439582,
+      "centreline_point_count": 6,
+      "predecessors": [
+        "{8255e25d-c32e-3396-9260-b0939027a091}"
+      ],
+      "successors": [
+        "{02200d70-8145-380c-b8c7-a73c4f8ebaa6}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "46",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.210418357
+        }
+      ]
+    },
+    {
+      "id": "{80afe9e1-fbda-3cc4-83c9-0be05e4e49d5}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 1.9056,
+      "centreline_point_count": 12,
+      "predecessors": [
+        "{8ac7a352-1683-3a54-9a41-9cc2acd5d423}"
+      ],
+      "successors": [],
+      "opendrive_occurrences": [
+        {
+          "road_id": "4",
+          "lane_section_index": 0,
+          "lane_id": 2,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{8255e25d-c32e-3396-9260-b0939027a091}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.210418,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{5d6aa09d-674b-374e-893c-e5e51d84853d}"
+      ],
+      "successors": [
+        "{7fbba338-806a-3254-bab8-1d5c1b9bc361}",
+        "{efebe81d-afa6-342a-848b-e545cda75a02}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "46",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        },
+        {
+          "road_id": "47",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{82bb4345-b8e5-3140-9bef-502824194b4c}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.210418,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{fe4fa9df-01f2-3827-8962-f9bbf086bfc1}"
+      ],
+      "successors": [
+        "{2dd62432-f786-3a1a-a110-b3e948be9a8e}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "45",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{82e38702-6749-3f64-8322-9e294a1ba678}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.001703,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{4b4556f1-8058-34cb-8204-7c82f1111c3c}",
+        "{23137bee-820e-35c9-ac6b-a2b0b0f41b3e}"
+      ],
+      "successors": [
+        "{a0af5911-f04e-39c4-968b-cc86bb49c515}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "338",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.865174712
+        },
+        {
+          "road_id": "346",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{840b03f1-d9bb-3da0-877e-6835bb5e1616}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 2.239316,
+      "centreline_point_count": 9,
+      "predecessors": [
+        "{d363f06e-4ae5-305d-8270-a8b39b66cfd1}",
+        "{7aa3b7f6-14d4-324f-b814-3bfa8a5d683e}"
+      ],
+      "successors": [
+        "{8f527a58-8675-3da7-8125-b96c43528e73}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "18",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{84c31fc3-f8c7-366c-a4f4-48e8186e65be}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.92,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{7632f752-06f5-3494-804d-715cd858c96c}"
+      ],
+      "successors": [
+        "{fe4fa9df-01f2-3827-8962-f9bbf086bfc1}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "45",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.650000069
+        }
+      ]
+    },
+    {
+      "id": "{858ddf59-0553-3bfe-8a4a-007d9519a5f6}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.402825,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{2d34777d-b04a-3612-be64-f7a45c388396}"
+      ],
+      "successors": [
+        "{70d6262f-cf98-39bb-b6c6-cd47fcd6e62d}",
+        "{a902bcc4-cd8c-39b3-a497-b72c70289c47}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "0",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{86c90519-5442-3557-a1a6-0300bfe276c7}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 2.473775,
+      "centreline_point_count": 7,
+      "predecessors": [
+        "{e3a70a5e-f0c4-35cd-bb9e-10ab5c9a61eb}"
+      ],
+      "successors": [
+        "{9477ae27-d456-30ad-83c6-9732581f9af6}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "15",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{8842f179-8138-3b45-bf5d-dc904892bd2e}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.17,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{2a9bc542-0e7f-32ab-a1cd-716779783e42}",
+        "{ea22971c-4481-361a-bb39-6a2d1e6d4122}"
+      ],
+      "successors": [
+        "{65f523fc-2e5f-3565-9a92-f5c3cef60e28}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "306",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.084086204
+        },
+        {
+          "road_id": "320",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.141232979
+        }
+      ]
+    },
+    {
+      "id": "{8ac7a352-1683-3a54-9a41-9cc2acd5d423}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 2.480052,
+      "centreline_point_count": 7,
+      "predecessors": [
+        "{1e12637d-f37c-3239-a22d-4768bc623264}"
+      ],
+      "successors": [
+        "{80afe9e1-fbda-3cc4-83c9-0be05e4e49d5}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "11",
+          "lane_section_index": 0,
+          "lane_id": 2,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{8f527a58-8675-3da7-8125-b96c43528e73}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.001783,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{840b03f1-d9bb-3da0-877e-6835bb5e1616}"
+      ],
+      "successors": [
+        "{78051476-0521-3558-87d5-ae9abf0d691f}",
+        "{40138542-df3a-3174-9d36-9d5838c99066}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "14",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{90a5fd41-0552-3aa1-89b4-08079c2711d8}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.302795,
+      "centreline_point_count": 13,
+      "predecessors": [
+        "{317261be-5a4c-36c7-962d-a6c3b040e2fb}"
+      ],
+      "successors": [
+        "{f3bfd945-629c-378b-895e-11ad350d0e17}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "93",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.252556467
+        },
+        {
+          "road_id": "135",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        },
+        {
+          "road_id": "143",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{9153a3be-1116-3149-9e76-3f7f86502e6a}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.290454,
+      "centreline_point_count": 6,
+      "predecessors": [
+        "{aac5c63d-4c7d-3bb4-a30d-fa6f3c312af7}"
+      ],
+      "successors": [
+        "{2342449c-9957-3f3e-a5cb-cdba7c6edd2c}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "321",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.311232979
+        }
+      ]
+    },
+    {
+      "id": "{91ca2aef-915a-396f-8959-0f8db7572024}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.941078,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{c43e7be6-e80f-3a80-a49c-b5810ef4ae36}"
+      ],
+      "successors": [
+        "{54023330-459e-323c-beae-81df9fbde295}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "335",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.411580979
+        }
+      ]
+    },
+    {
+      "id": "{922eb5b8-6caa-3cdf-ac51-5f9e06010600}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.001703,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{b0dac25a-9652-3aa9-99a4-f49fbd873a80}"
+      ],
+      "successors": [
+        "{d001c7dc-d19b-3951-b23d-f82aca829c1f}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "342",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.624276449
+        }
+      ]
+    },
+    {
+      "id": "{92534da4-da6b-33d9-9b33-3c8a294b3072}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.136089,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{0e958036-e9ea-3f34-ad72-7c42abb9dafc}"
+      ],
+      "successors": [
+        "{aac5c63d-4c7d-3bb4-a30d-fa6f3c312af7}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "93",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.005143939
+        },
+        {
+          "road_id": "194",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.005143939
+        },
+        {
+          "road_id": "321",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.005143939
+        }
+      ]
+    },
+    {
+      "id": "{925d0f30-1e15-31b8-a611-04e99138d8fc}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.004141,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{d9edb4c4-9f70-366e-b2bd-d34ab26a217b}"
+      ],
+      "successors": [
+        "{54cc0275-26a1-36d3-a334-0918d57a2d24}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "321",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.641007779
+        }
+      ]
+    },
+    {
+      "id": "{9477ae27-d456-30ad-83c6-9732581f9af6}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 2.509771,
+      "centreline_point_count": 15,
+      "predecessors": [
+        "{86c90519-5442-3557-a1a6-0300bfe276c7}"
+      ],
+      "successors": [
+        "{5d6aa09d-674b-374e-893c-e5e51d84853d}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "2",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{97d85369-9c81-32c9-b684-1fb5b9835940}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.382762,
+      "centreline_point_count": 19,
+      "predecessors": [
+        "{02dfc126-3096-31ae-bd99-ce26c505d26f}"
+      ],
+      "successors": [
+        "{5e908d81-9ee6-3afb-b55c-13d1d315612b}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "322",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.605952063        }
+      ]
+    },
+    {
+      "id": "{9d564438-ca4a-388f-9b5a-077d63bb940b}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.168311,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{c3a188ab-d809-39ee-8aa2-31a8aaa3cd62}"
+      ],
+      "successors": [
+        "{a30a4456-8c80-34b5-bde4-f43494272aaf}",
+        "{a3bfca82-750c-358f-a988-00ee20f634d4}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "24",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.730432391
+        },
+        {
+          "road_id": "32",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.289026953
+        }
+      ]
+    },
+    {
+      "id": "{9d6d87d3-9ff9-3441-899b-d20064845bdb}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.579835,
+      "centreline_point_count": 16,
+      "predecessors": [
+        "{317261be-5a4c-36c7-962d-a6c3b040e2fb}"
+      ],
+      "successors": [
+        "{6b249816-be3f-3c6d-a125-96bf25d13f79}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "194",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.252556467
+        },
+        {
+          "road_id": "223",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.273279485
+        },
+        {
+          "road_id": "232",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.273279485
+        }
+      ]
+    },
+    {
+      "id": "{9f8b1b7e-0b59-3fc0-8bd6-5331d2183088}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.007956,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{33a6ca6a-93cc-39b6-a711-e7d7ff017342}"
+      ],
+      "successors": [
+        "{46074810-9d02-30c5-a7f2-622cd6212e3e}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "6",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{a0af5911-f04e-39c4-968b-cc86bb49c515}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.213423,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{82e38702-6749-3f64-8322-9e294a1ba678}"
+      ],
+      "successors": [
+        "{b1fa3ebf-dd85-38f4-ac33-f4b35ecfed00}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "13",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{a30a4456-8c80-34b5-bde4-f43494272aaf}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.566608,
+      "centreline_point_count": 4,
+      "predecessors": [
+        "{9d564438-ca4a-388f-9b5a-077d63bb940b}"
+      ],
+      "successors": [
+        "{251646c6-ab00-3c9c-86e8-4a18ec32fba7}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "24",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.163984694
+        }
+      ]
+    },
+    {
+      "id": "{a3655513-043c-337a-aecf-df92488f276e}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.190595,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{b51cb279-b60d-3922-8669-82ae30190e1b}"
+      ],
+      "successors": [
+        "{607562fd-74b5-35cf-aa7d-8a239f20bbc1}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "19",
+          "lane_section_index": 1,
+          "lane_id": -1,
+          "lane_section_s_m": 0.011009813,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{a3bfca82-750c-358f-a988-00ee20f634d4}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.042257,
+      "centreline_point_count": 10,
+      "predecessors": [
+        "{9d564438-ca4a-388f-9b5a-077d63bb940b}"
+      ],
+      "successors": [
+        "{2fe6aa94-1510-3275-b95b-4b9552801f3b}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "32",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.024711667
+        }
+      ]
+    },
+    {
+      "id": "{a4b5ede2-e8ca-3587-a649-fe65ed2be61a}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.168366,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{45692e26-a4ea-3c9f-8525-e6f36f09e683}"
+      ],
+      "successors": [
+        "{57e997d7-f91a-3111-86b7-0829931085c7}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "25",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.730432391
+        }
+      ]
+    },
+    {
+      "id": "{a7a8fcf7-84e1-36d4-99a8-1f5a335e608a}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 1.694226,
+      "centreline_point_count": 6,
+      "predecessors": [],
+      "successors": [
+        "{c3a188ab-d809-39ee-8aa2-31a8aaa3cd62}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "7",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{a83713ba-fed9-3654-a4f6-d0973bec2c3b}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 2.488126,
+      "centreline_point_count": 7,
+      "predecessors": [
+        "{e4a93cf2-c019-3e0f-a62b-a0a523137103}"
+      ],
+      "successors": [
+        "{278d42e4-a5fc-3026-aee9-78483516fd73}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "11",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{a902bcc4-cd8c-39b3-a497-b72c70289c47}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.573519,
+      "centreline_point_count": 33,
+      "predecessors": [
+        "{858ddf59-0553-3bfe-8a4a-007d9519a5f6}"
+      ],
+      "successors": [
+        "{7d5647b7-d851-310a-846e-973bd0396fdc}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "30",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{aac5c63d-4c7d-3bb4-a30d-fa6f3c312af7}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.17,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{92534da4-da6b-33d9-9b33-3c8a294b3072}"
+      ],
+      "successors": [
+        "{9153a3be-1116-3149-9e76-3f7f86502e6a}",
+        "{0863c21f-0a5d-39f8-9f83-8664a19dd3ca}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "93",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.141232979
+        },
+        {
+          "road_id": "194",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.141232979
+        },
+        {
+          "road_id": "321",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.141232979
+        }
+      ]
+    },
+    {
+      "id": "{ab0e36c9-40d8-3502-8e27-35c4be0cdce8}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.543723,
+      "centreline_point_count": 5,
+      "predecessors": [
+        "{46074810-9d02-30c5-a7f2-622cd6212e3e}"
+      ],
+      "successors": [
+        "{17f9fc39-fad1-30ff-b81d-b6876501008d}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "69",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.263905423
+        }
+      ]
+    },
+    {
+      "id": "{b0357da4-57a6-3bc8-bb34-6efb592d514e}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 2.954131,
+      "centreline_point_count": 25,
+      "predecessors": [
+        "{b9de6ec7-3d73-3d5e-8041-e2b6fad165ed}"
+      ],
+      "successors": [
+        "{4b4556f1-8058-34cb-8204-7c82f1111c3c}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "338",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{b0dac25a-9652-3aa9-99a4-f49fbd873a80}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.213423,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{f17276b1-f9be-37ab-9f82-10bd18e178a1}"
+      ],
+      "successors": [
+        "{d363f06e-4ae5-305d-8270-a8b39b66cfd1}",
+        "{922eb5b8-6caa-3cdf-ac51-5f9e06010600}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "13",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{b1ea243f-1da3-3595-b06c-17b96d4fe95b}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.522015,
+      "centreline_point_count": 5,
+      "predecessors": [
+        "{30cc3cf6-75ca-3a2b-b980-0f8f4653d60d}"
+      ],
+      "successors": [
+        "{dde3a446-09b7-392e-b739-06a50fc44f45}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "334",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.35
+        }
+      ]
+    },
+    {
+      "id": "{b1fa3ebf-dd85-38f4-ac33-f4b35ecfed00}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.896768,
+      "centreline_point_count": 7,
+      "predecessors": [
+        "{a0af5911-f04e-39c4-968b-cc86bb49c515}"
+      ],
+      "successors": [
+        "{3a4ec57a-c1c6-34b1-918d-82c5f22986f8}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "16",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{b51cb279-b60d-3922-8669-82ae30190e1b}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.01101,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{e2743ee3-0e29-34e0-8984-a16dfe626505}"
+      ],
+      "successors": [
+        "{a3655513-043c-337a-aecf-df92488f276e}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "19",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{b624d53f-88ef-3e22-81a1-23351da1f4af}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.003023,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{2fe6aa94-1510-3275-b95b-4b9552801f3b}"
+      ],
+      "successors": [
+        "{7d5647b7-d851-310a-846e-973bd0396fdc}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "32",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{b9de6ec7-3d73-3d5e-8041-e2b6fad165ed}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 2.41154,
+      "centreline_point_count": 9,
+      "predecessors": [
+        "{f71960bf-7165-3ae5-b203-e04983359107}"
+      ],
+      "successors": [
+        "{b0357da4-57a6-3bc8-bb34-6efb592d514e}",
+        "{c43e7be6-e80f-3a80-a49c-b5810ef4ae36}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "18",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{bc5eca94-5cf3-3a2d-b48a-c410b39a8eb2}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.019546,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{e1a3112b-e4c3-3bd5-92fd-6827419bcc2b}"
+      ],
+      "successors": [
+        "{ea22971c-4481-361a-bb39-6a2d1e6d4122}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "320",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.601687288
+        }
+      ]
+    },
+    {
+      "id": "{becf583d-91ca-3e65-ac66-f66089686169}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.075449,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{0863c21f-0a5d-39f8-9f83-8664a19dd3ca}",
+        "{3a24439d-fac6-3a8b-84c4-c7d9a74c4ce3}",
+        "{6d16f79a-a358-3d03-beb1-20ebacd4dbdc}"
+      ],
+      "successors": [
+        "{f81d12b2-eb71-3a01-8a13-fba7e30cf898}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "93",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.468859082
+        },
+        {
+          "road_id": "135",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.207778999
+        },
+        {
+          "road_id": "143",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.207778999
+        },
+        {
+          "road_id": "194",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.468859082
+        },
+        {
+          "road_id": "223",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.365493262
+        },
+        {
+          "road_id": "232",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.365493262
+        }
+      ]
+    },
+    {
+      "id": "{bfde17cd-2a65-3a42-b67c-6b3658f6f7f8}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 3.389279,
+      "centreline_point_count": 19,
+      "predecessors": [
+        "{342ce16e-c729-3950-8d5b-40b90658ec0e}"
+      ],
+      "successors": [
+        "{02dfc126-3096-31ae-bd99-ce26c505d26f}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "62",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{c1384ad2-0c45-32d8-b136-73a8fd5fcdf2}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.571349,
+      "centreline_point_count": 33,
+      "predecessors": [
+        "{607562fd-74b5-35cf-aa7d-8a239f20bbc1}"
+      ],
+      "successors": [
+        "{57e997d7-f91a-3111-86b7-0829931085c7}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "38",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.002314237
+        }
+      ]
+    },
+    {
+      "id": "{c3a188ab-d809-39ee-8aa2-31a8aaa3cd62}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.398181,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{a7a8fcf7-84e1-36d4-99a8-1f5a335e608a}"
+      ],
+      "successors": [
+        "{9d564438-ca4a-388f-9b5a-077d63bb940b}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "1",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{c43e7be6-e80f-3a80-a49c-b5810ef4ae36}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.518516,
+      "centreline_point_count": 11,
+      "predecessors": [
+        "{b9de6ec7-3d73-3d5e-8041-e2b6fad165ed}"
+      ],
+      "successors": [
+        "{91ca2aef-915a-396f-8959-0f8db7572024}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "335",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{c5771a52-88b2-3751-8491-b0b3989db886}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 1.666956,
+      "centreline_point_count": 6,
+      "predecessors": [
+        "{1c0d6342-89f9-3f21-97a1-b302c5a611c2}"
+      ],
+      "successors": [],
+      "opendrive_occurrences": [
+        {
+          "road_id": "12",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{c74caa02-a1ea-36d9-8821-d66fcfcf2aad}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.232574,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{54cc0275-26a1-36d3-a334-0918d57a2d24}"
+      ],
+      "successors": [
+        "{5792a6d9-dc0d-3e85-a96c-2bdf591270d7}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "10",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{c7bd3668-1afc-3494-9734-04e5ae57e5f1}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.01101,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{7d5647b7-d851-310a-846e-973bd0396fdc}"
+      ],
+      "successors": [
+        "{3f89e5c6-67a5-3601-9668-658e157d4b2a}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "19",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{c9e82a50-36a6-3781-a258-001c7d22f858}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.004141,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{f81d12b2-eb71-3a01-8a13-fba7e30cf898}"
+      ],
+      "successors": [
+        "{317261be-5a4c-36c7-962d-a6c3b040e2fb}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "93",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.590480545
+        },
+        {
+          "road_id": "135",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.157465161
+        },
+        {
+          "road_id": "143",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.157465161
+        },
+        {
+          "road_id": "194",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.590480545
+        },
+        {
+          "road_id": "223",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.315179425
+        },
+        {
+          "road_id": "232",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.315179425
+        }
+      ]
+    },
+    {
+      "id": "{d001c7dc-d19b-3951-b23d-f82aca829c1f}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.216583,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{922eb5b8-6caa-3cdf-ac51-5f9e06010600}"
+      ],
+      "successors": [
+        "{e33820e6-6026-33e3-b139-9fc2201d57ef}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "342",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.407693807
+        }
+      ]
+    },
+    {
+      "id": "{d363f06e-4ae5-305d-8270-a8b39b66cfd1}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 2.387871,
+      "centreline_point_count": 19,
+      "predecessors": [
+        "{b0dac25a-9652-3aa9-99a4-f49fbd873a80}"
+      ],
+      "successors": [
+        "{840b03f1-d9bb-3da0-877e-6835bb5e1616}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "341",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{d37cd5d9-6651-33c9-ae06-945b4ac67729}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 2.166356,
+      "centreline_point_count": 15,
+      "predecessors": [
+        "{2dd62432-f786-3a1a-a110-b3e948be9a8e}"
+      ],
+      "successors": [
+        "{e4a93cf2-c019-3e0f-a62b-a0a523137103}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "2",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{d8fca83d-2dac-3722-9cf9-fd42cd7d4916}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.694226,
+      "centreline_point_count": 6,
+      "predecessors": [
+        "{57e997d7-f91a-3111-86b7-0829931085c7}"
+      ],
+      "successors": [],
+      "opendrive_occurrences": [
+        {
+          "road_id": "7",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{d9edb4c4-9f70-366e-b2bd-d34ab26a217b}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.019775,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{2342449c-9957-3f3e-a5cb-cdba7c6edd2c}"
+      ],
+      "successors": [
+        "{925d0f30-1e15-31b8-a611-04e99138d8fc}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "321",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.621232979
+        }
+      ]
+    },
+    {
+      "id": "{dbf76e61-e450-32e2-b26b-4b1fd1dc9ddd}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.550125,
+      "centreline_point_count": 9,
+      "predecessors": [
+        "{40138542-df3a-3174-9d36-9d5838c99066}"
+      ],
+      "successors": [
+        "{3f396bee-445b-3efa-bcfb-a8862c7904ec}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "68",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.807628848
+        }
+      ]
+    },
+    {
+      "id": "{dde3a446-09b7-392e-b739-06a50fc44f45}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.93576,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{b1ea243f-1da3-3595-b06c-17b96d4fe95b}"
+      ],
+      "successors": [
+        "{7aa3b7f6-14d4-324f-b814-3bfa8a5d683e}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "334",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.411580979
+        }
+      ]
+    },
+    {
+      "id": "{e0dbe6c2-0cd9-3ca7-a376-e74c2efc04f9}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.021689,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{607562fd-74b5-35cf-aa7d-8a239f20bbc1}"
+      ],
+      "successors": [
+        "{6789762e-ebe9-33e6-8167-d529a7b5a473}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "26",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.00204579
+        }
+      ]
+    },
+    {
+      "id": "{e1a3112b-e4c3-3bd5-92fd-6827419bcc2b}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.019775,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{6e1f1f12-282d-3d66-a0c4-a7622a684b9f}"
+      ],
+      "successors": [
+        "{bc5eca94-5cf3-3a2d-b48a-c410b39a8eb2}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "320",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.621232979
+        }
+      ]
+    },
+    {
+      "id": "{e2743ee3-0e29-34e0-8984-a16dfe626505}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.005144,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{5e908d81-9ee6-3afb-b55c-13d1d315612b}"
+      ],
+      "successors": [
+        "{b51cb279-b60d-3922-8669-82ae30190e1b}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "102",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 3.898844175
+        },
+        {
+          "road_id": "220",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        },
+        {
+          "road_id": "322",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }      ]
+    },
+    {
+      "id": "{e2cee8a7-973a-3782-9787-da4bd95b164a}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.688767,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{4b682127-60bd-33a1-966b-faf4f5c750d1}"
+      ],
+      "successors": [
+        "{f17276b1-f9be-37ab-9f82-10bd18e178a1}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "9",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{e33820e6-6026-33e3-b139-9fc2201d57ef}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.405088,
+      "centreline_point_count": 13,
+      "predecessors": [
+        "{d001c7dc-d19b-3951-b23d-f82aca829c1f}"
+      ],
+      "successors": [
+        "{411e73c7-9247-3a25-b8b6-da9c43abd266}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "342",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.197984905
+        }
+      ]
+    },
+    {
+      "id": "{e3a70a5e-f0c4-35cd-bb9e-10ab5c9a61eb}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 2.4962,
+      "centreline_point_count": 7,
+      "predecessors": [
+        "{2e5ac310-6ac1-3540-9344-1ce3ddefd2cf}"
+      ],
+      "successors": [
+        "{86c90519-5442-3557-a1a6-0300bfe276c7}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "11",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{e4a93cf2-c019-3e0f-a62b-a0a523137103}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 2.42471,
+      "centreline_point_count": 7,
+      "predecessors": [
+        "{d37cd5d9-6651-33c9-ae06-945b4ac67729}"
+      ],
+      "successors": [
+        "{a83713ba-fed9-3654-a4f6-d0973bec2c3b}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "15",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{ea22971c-4481-361a-bb39-6a2d1e6d4122}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 1.290454,
+      "centreline_point_count": 6,
+      "predecessors": [
+        "{bc5eca94-5cf3-3a2d-b48a-c410b39a8eb2}"
+      ],
+      "successors": [
+        "{8842f179-8138-3b45-bf5d-dc904892bd2e}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "320",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.311232979
+        }
+      ]
+    },
+    {
+      "id": "{ee9b3651-b3e0-3be6-9a67-7f8f91255d77}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.063023,
+      "centreline_point_count": 3,
+      "predecessors": [
+        "{411e73c7-9247-3a25-b8b6-da9c43abd266}"
+      ],
+      "successors": [
+        "{2e5ac310-6ac1-3540-9344-1ce3ddefd2cf}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "5",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{efebe81d-afa6-342a-848b-e545cda75a02}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 2.918321,
+      "centreline_point_count": 20,
+      "predecessors": [
+        "{8255e25d-c32e-3396-9260-b0939027a091}"
+      ],
+      "successors": [
+        "{02dfc126-3096-31ae-bd99-ce26c505d26f}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "47",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.210418357
+        }
+      ]
+    },
+    {
+      "id": "{f17276b1-f9be-37ab-9f82-10bd18e178a1}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.896768,
+      "centreline_point_count": 7,
+      "predecessors": [
+        "{e2cee8a7-973a-3782-9787-da4bd95b164a}"
+      ],
+      "successors": [
+        "{b0dac25a-9652-3aa9-99a4-f49fbd873a80}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "16",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{f1a794ae-656d-3656-a0aa-51614ff70e98}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 1.52844,
+      "centreline_point_count": 11,
+      "predecessors": [
+        "{02200d70-8145-380c-b8c7-a73c4f8ebaa6}"
+      ],
+      "successors": [
+        "{33a6ca6a-93cc-39b6-a711-e7d7ff017342}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "46",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.570000002
+        }
+      ]
+    },
+    {
+      "id": "{f3bfd945-629c-378b-895e-11ad350d0e17}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.007956,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{90a5fd41-0552-3aa1-89b4-08079c2711d8}",
+        "{61233b2c-e5d4-336b-b31b-0463a10b0e9c}"
+      ],
+      "successors": [
+        "{342ce16e-c729-3950-8d5b-40b90658ec0e}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "6",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{f71960bf-7165-3ae5-b203-e04983359107}",
+      "travel_dir": "forward",
+      "speed_limit": "40mph",
+      "length_m": 0.001783,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{6b249816-be3f-3c6d-a125-96bf25d13f79}"
+      ],
+      "successors": [
+        "{b9de6ec7-3d73-3d5e-8041-e2b6fad165ed}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "14",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.0
+        }
+      ]
+    },
+    {
+      "id": "{f81d12b2-eb71-3a01-8a13-fba7e30cf898}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.046172,
+      "centreline_point_count": 2,
+      "predecessors": [
+        "{becf583d-91ca-3e65-ac66-f66089686169}"
+      ],
+      "successors": [
+        "{c9e82a50-36a6-3781-a258-001c7d22f858}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "93",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.544308095
+        },
+        {
+          "road_id": "135",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.161606549
+        },
+        {
+          "road_id": "143",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.161606549
+        },
+        {
+          "road_id": "194",
+          "lane_section_index": 0,
+          "lane_id": -1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 1.544308095
+        },
+        {
+          "road_id": "223",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.319320813
+        },
+        {
+          "road_id": "232",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 2.319320813
+        }
+      ]
+    },
+    {
+      "id": "{fe4fa9df-01f2-3827-8962-f9bbf086bfc1}",
+      "travel_dir": "backward",
+      "speed_limit": "40mph",
+      "length_m": 0.439582,
+      "centreline_point_count": 6,
+      "predecessors": [
+        "{84c31fc3-f8c7-366c-a4f4-48e8186e65be}"
+      ],
+      "successors": [
+        "{82bb4345-b8e5-3140-9bef-502824194b4c}"
+      ],
+      "opendrive_occurrences": [
+        {
+          "road_id": "45",
+          "lane_section_index": 0,
+          "lane_id": 1,
+          "lane_section_s_m": 0.0,
+          "vector_lane_s_offset_m": 0.210418357
+        }
+      ]
+    }
+  ]
+}
