@@ -4,10 +4,11 @@
 
 A research platform developed with **NVIDIA Isaac Sim, PhysX, OpenUSD, MathWorks RoadRunner, and ROS 2** for vehicle simulation, Sim-to-Real evaluation, and future autonomous-driving and reinforcement-learning research.
 
-<!--
-Add the final system architecture figure here after it is uploaded:
-![CobraFlex system architecture](docs/images/system_architecture.png)
--->
+<p align="center">
+  <img src="docs/images/system_architecture.png"
+       alt="CobraFlex system architecture"
+       width="900">
+</p>
 
 ## Overview
 
