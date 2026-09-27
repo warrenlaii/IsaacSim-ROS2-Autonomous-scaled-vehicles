@@ -18,6 +18,8 @@ The repository has not yet been tagged as `v1.0.0-thesis`.
 - Detailed controller test-profile and parameter documentation.
 - Processed Sim-to-Real and ROS 2 validation tables under `validation/`.
 - End-to-end `HANDOVER.md` covering clone, Git LFS, Isaac Sim startup, ROS 2 checks, test execution, recording, analysis, and acceptance.
+- GitHub Actions clean-clone/static release-acceptance workflow.
+- `ros2/requirements-analysis.txt` for the maintained offline analysis and regression-test dependencies.
 - `docs/data_provenance.md` defining historical data/tool and map-version boundaries.
 
 ### Changed

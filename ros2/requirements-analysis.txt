@@ -1,0 +1,12 @@
+# Offline analysis and regression-test dependencies.
+# ROS 2 Python packages such as rclpy are provided by the sourced ROS 2 installation
+# and are intentionally not installed from PyPI here.
+rosbags
+numpy
+pandas
+openpyxl
+matplotlib
+PyQt5
+scipy
+PyYAML
+pytest

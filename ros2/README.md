@@ -73,7 +73,13 @@ python3 -m pytest tests/test_cobraflex_analyzer.py -q
 
 The control tool requires a sourced ROS 2 environment with `rclpy` and the standard message packages used by the script. Its GUI also requires PyQt5 and Matplotlib.
 
-The analysis tools require Python 3 with `rosbags`, NumPy, pandas, openpyxl, Matplotlib, and PyQt5. SciPy is optional for filtering, and PyYAML is required only when YAML configuration files are used.
+The analysis tools use the dependencies listed in `requirements-analysis.txt`. Install them with:
+
+```bash
+python3 -m pip install -r ros2/requirements-analysis.txt
+```
+
+ROS 2 Python packages such as `rclpy` come from the sourced ROS 2 installation and are intentionally not installed from PyPI.
 
 Both the controller and generic analyzer can optionally import a colocated `cobraflex_topics.py`. That override file is not part of this handover repository; when it is absent, the fallback topic definitions embedded in the maintained scripts are used.
 
