@@ -393,18 +393,21 @@ This repository accompanies the Master's thesis:
 
 > **Design and Implementation of a ROS 2-Compatible Digital Twin Platform for 1:14 Scaled Autonomous Vehicles in Reinforcement Learning**
 
-**Program:** M.Eng. Automotive Systems  
-**Institution:** Hochschule Esslingen  
-**Author:** Warren Lai  
-**Year:** 2026
+| Role | Information |
+| --- | --- |
+| **Author** | Warren Lai |
+| **Supervisor** | Prof. Dr.-Ing. Ralf Schüler |
+| **Institution** | Hochschule Esslingen |
+| **Programme** | Automotive Systems, M.Eng. |
+| **Year** | 2026 |
 
-The thesis focuses on digital-twin environment generation, vehicle-model calibration, ROS 2 integration, and Sim-to-Real evaluation for a scaled autonomous research vehicle.
+The thesis focuses on digital-twin environment generation, vehicle-model calibration, ROS 2 integration, and Sim-to-Real evaluation for the **1:14 CobraFlex research vehicle**.
 
 ---
 
 ## Citation
 
-If this repository is used in academic work, please cite the thesis.
+If this repository or the associated work is used in academic research, please cite the thesis:
 
 ```bibtex
 @mastersthesis{lai2026cobraflex,
@@ -415,32 +418,34 @@ If this repository is used in academic work, please cite the thesis.
 }
 ```
 
-Update the citation if the thesis receives a permanent institutional publication URL or identifier.
+The citation will be updated if a permanent institutional publication URL or identifier becomes available.
 
 ---
 
 ## License
 
-A final repository license has not yet been specified.
+The licensing of this repository has **not yet been finalised**.
 
-Before making the repository public, verify redistribution rights for:
+Until a final licensing decision is made, this repository should **not be assumed to grant permission for reuse, redistribution, or modification** of its contents.
+
+Before any public release, redistribution rights must be verified for:
 
 - USD assets;
-- RoadRunner exports;
+- RoadRunner/OpenDRIVE exports;
 - third-party 3D models and textures;
 - external software components;
-- any included datasets.
+- datasets and recorded experimental material.
 
-Add the appropriate `LICENSE` file only after this check is complete.
+A final `LICENSE` file should be added only after these rights and the intended licensing terms have been confirmed.
 
 ---
 
 ## Thesis Baseline Release
 
-The frozen handover baseline should be tagged as:
+The frozen thesis handover baseline is intended to be tagged as:
 
 ```text
 v1.0.0-thesis
 ```
 
-Future work should branch from this release rather than modifying the archived thesis configuration in place.
+Future development should build from this tagged baseline rather than overwriting the archived thesis configuration.
