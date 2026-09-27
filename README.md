@@ -395,7 +395,7 @@ This repository accompanies the Master's thesis:
 
 | Role | Information |
 | --- | --- |
-| **Author** | Warren Lai |
+| **Author** | Hwa-Luen,Lai (Warren) |
 | **Supervisor** | Prof. Dr.-Ing. Ralf Schüler |
 | **Institution** | Hochschule Esslingen |
 | **Programme** | Automotive Systems, M.Eng. |
@@ -411,8 +411,8 @@ If this repository or the associated work is used in academic research, please c
 
 ```bibtex
 @mastersthesis{lai2026cobraflex,
-  author = {Warren Lai},
-  title  = {Design and Implementation of a ROS 2-Compatible Digital Twin Platform for 1:14 Scaled Autonomous Vehicles in Reinforcement Learning},
+  author = {Hwa-Luen,Lai},
+  title  = {Design and Implementation of a ROS 2-Compatible Digital Twin Platform for 1:14 Scaled Autonomous Vehicles for Reinforcement Learning},
   school = {Hochschule Esslingen},
   year   = {2026}
 }
