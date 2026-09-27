@@ -1,0 +1,53 @@
+baseline:
+  name: thesis_v1
+  status: frozen
+  isaac_sim: "6.0.0"
+  physics_rate_hz: 240
+  gpu_dynamics: false
+  solver: PGS
+  broadphase: GPU
+  articulation_iterations:
+    position: 32
+    velocity: 1
+  joint_drive:
+    type: force
+    stiffness: 0
+    damping: 10000
+    max_force_per_wheel_nm: 1.8
+  rigid_body_angular_damping: 0.05
+  friction:
+    type: Patch
+    combine_mode: Multiply
+    wheel_rubber:
+      static: 0.5
+      dynamic: 0.4
+    pvc_canvas:
+      static: 0.5
+      dynamic: 0.4
+  publication:
+    clock_hz: 240
+    gate_step: 4
+    state_tf_joint_hz: 60
+
+vehicle:
+  mass_kg: 3.5
+  wheelbase_m: 0.154
+  track_width_m: 0.153
+  wheel_radius_m: 0.03725
+  centre_of_mass_m:
+    x: 0.006
+    y: -0.004
+    z: 0.030
+  diagonal_inertia_kg_m2:
+    ix: 0.00854167
+    iy: 0.02316
+    iz: 0.028701667
+  max_linear_speed_mps: 0.53
+
+assets:
+  vehicle: "../assets/vehicle/ADMIT14_cobraflex_baseline_v1.usd"
+  environment: "../assets/environment/ADMIT14_RoadRunner_Map_v1.usd"
+  integrated_scene: "../assets/scenes/ADMIT14_Integrated_Scene_v1.usd"
+
+notes:
+  - "The 0.08 N.m Max Drive Force setting is diagnostic only; the delivered baseline uses 1.8 N.m per wheel."
