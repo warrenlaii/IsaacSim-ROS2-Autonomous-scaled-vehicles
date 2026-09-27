@@ -1,0 +1,47 @@
+contract:
+  status: accepted
+  physics_clock_hz: 240
+  state_tf_joint_hz: 60
+  minimum_required_state_rate_hz: 50
+
+topics:
+  command:
+    cmd_vel:
+      name: /cmd_vel
+      direction: ros2_to_simulation
+
+  timing:
+    clock:
+      name: /clock
+      direction: simulation_to_ros2
+      expected_rate_hz: 240
+
+  state:
+    odometry_truth:
+      name: /odom_truth
+      direction: simulation_to_ros2
+      expected_rate_hz: 60
+    joint_states:
+      name: /joint_states
+      direction: simulation_to_ros2
+      expected_rate_hz: 60
+    tf:
+      name: /tf
+      direction: simulation_to_ros2
+      expected_rate_hz: 60
+
+  perception:
+    lidar_scan:
+      name: /scan
+      direction: simulation_to_ros2
+      status: verified
+
+  diagnostics:
+    wheel_command:
+      name: /cobraflex/wheel_cmd_debug
+      direction: simulation_to_ros2
+      purpose: commanded_wheel_velocity_debug
+
+notes:
+  - "Lane Camera image and CameraInfo were verified in the final handover contract, but their exact namespace is intentionally not hard-coded here until audited directly from the delivered scene."
+  - "The wheel-command debug topic is diagnostic and is not part of the vehicle control path."
