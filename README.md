@@ -112,8 +112,13 @@ IsaacSim-ROS2-Autonomous-scaled-vehicles/
 │
 ├── ros2/
 │   ├── control/
+│   │   └── cobraflex_test_control.py
 │   ├── analysis/
-│   └── utilities/
+│   │   ├── cobraflex_rosbag_analyzer.py
+│   │   ├── cobraflex_analyzer.py
+│   │   └── tests/
+│   │       └── test_cobraflex_analyzer.py
+│   └── README.md
 │
 ├── roadrunner/
 │   ├── OpenDRIVE/
