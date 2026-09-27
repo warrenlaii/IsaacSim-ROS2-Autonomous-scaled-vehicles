@@ -3,7 +3,7 @@
 This directory provides a compact, machine-readable summary of the frozen CobraFlex thesis baseline.
 
 - `baseline.yaml` — vehicle geometry, mass properties, PhysX/Isaac Sim settings, joint-drive settings, material settings, publication rates, and links to the formal USD assets.
-- `ros2_topics.yaml` — verified ROS 2 handover contract topics and publication rates.
+- `ros2_topics.yaml` — verified ROS 2 handover contract topics and publication rates, including the final Lane Camera topic names.
 
 The formal USD files under `assets/` remain the authoritative delivered simulation assets. These YAML files are handover references and should be versioned together with any future baseline change.
 

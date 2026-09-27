@@ -16,6 +16,10 @@ The handover filenames intentionally use the same `ADMIT14_RoadRunner_Map_v1` na
 
 The final OpenDRIVE file contains the repaired connector roads 306 and 322. The repair preserves endpoints, headings, road/lane IDs, and Junction 63 connections while removing the fold-back geometry. See the repair report for the acceptance checks.
 
+## Validation provenance
+
+The current OpenDRIVE handover file includes the 2026-08-16 Junction 63 repair. It postdates the frozen 2026-08-12 dynamics-validation baseline. Historical thesis dynamics results are therefore not presented as reruns with this later exchange artifact. See [`../docs/data_provenance.md`](../docs/data_provenance.md).
+
 ## Versioning
 
 Do not overwrite the `v1` map files in place. Future geometry changes should use a new versioned filename and be documented separately.
