@@ -997,7 +997,8 @@ class MainWindow(QMainWindow):
             return None
         if proc.poll() is not None:
             proc.wait()
-            return proc        proc.send_signal(signal.SIGINT)
+            return proc
+        proc.send_signal(signal.SIGINT)
         try:
             proc.wait(timeout=timeout_sec)
         except subprocess.TimeoutExpired:
