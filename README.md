@@ -1,4 +1,4 @@
-# CobraFlex Digital Twin
+# CobraFlex Digital Twin in Isaac Sim
 
 **ROS 2-Compatible Digital Twin Platform for a 1:14 Scaled Autonomous Vehicle**
 
