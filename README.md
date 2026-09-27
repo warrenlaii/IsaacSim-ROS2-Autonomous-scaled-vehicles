@@ -106,9 +106,9 @@ IsaacSim-ROS2-Autonomous-scaled-vehicles/
 │   └── scenes/
 │
 ├── config/
-│   ├── physics_baseline.yaml
-│   ├── vehicle_parameters.yaml
-│   └── ros2_topics.yaml
+│   ├── baseline.yaml
+│   ├── ros2_topics.yaml
+│   └── README.md
 │
 ├── ros2/
 │   ├── control/
@@ -254,6 +254,7 @@ The final architecture includes the following core interfaces.
 | IMU topic | Simulation → ROS 2 | Simulated inertial data |
 | Lane Camera Image | Simulation → ROS 2 | RGB image stream |
 | Lane Camera `CameraInfo` | Simulation → ROS 2 | Camera calibration/projection information |
+| `/scan` | Simulation → ROS 2 | LiDAR scan output |
 | `/cobraflex/wheel_cmd_debug` | Simulation → ROS 2 | Wheel-command diagnostics |
 
 The physics simulation runs at **240 Hz**. The state/TF/joint publication chain uses a Gate step of 4, corresponding to **60 Hz simulation time**.
@@ -286,7 +287,7 @@ The formal thesis baseline uses the following core configuration.
 The formal USD assets are the authoritative delivered configuration. A machine-readable summary should additionally be maintained in:
 
 ```text
-config/physics_baseline.yaml
+config/baseline.yaml
 ```
 
 > **Important:** The **0.08 N·m** Max Drive Force configuration was used only as a diagnostic ablation. It is **not** the formal thesis baseline.
