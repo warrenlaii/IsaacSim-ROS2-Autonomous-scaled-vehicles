@@ -1,0 +1,9 @@
+requirement,interface,runtime_evidence,expected_or_measured_rate_hz,status,scope_note,source_reference
+Command action,/cmd_vel,"Linear and rotational commands verified separately; Test 03 also verified simultaneous non-zero (V,w) across the matched 3x4 grid with correct left/right wheel targets and 99.49-100.73% four-wheel tracking",,Pass,,Final thesis Table 5.5
+Wheel and drive mapping,Geometry / wheel order,Wheel radius 0.03725 m; measured wheel-centre separation 0.153 m; FL-RL-FR-RR order,,Pass,,Final thesis Table 5.5
+Simulation clock,/clock,Monotonic without duplicate or backward time,240,Pass,,Final thesis Table 5.5
+Ground-truth odometry,/odom_truth,Unique timestamps and exact raw-TF agreement,60,Pass,,Final thesis Table 5.5
+Joint states and transforms,/joint_states and /tf,One active /joint_states publisher; complete odom-to-wheel TF chain; dynamic transforms at 60 Hz,60,Pass,,Final thesis Table 5.5
+Lane camera,Image + CameraInfo,"1,221 timestamp-matched pairs; valid 640x360 RGB8 payloads; monotonic timestamps; 60.000 Hz simulation-time rate; observed wall-arrival rate 23.043 Hz",60,Pass,"Transport, payload, and timestamp integrity only; image semantics, perception accuracy, and renderer-to-policy latency were not evaluated",Final thesis Table 5.5
+LiDAR,/scan,"ROS 2 transport, frame, angular coverage, and payload structure verified",,Pass (interface scope),Nominal timing and physical-sensor equivalence were not validated,Final thesis Table 5.5
+Supplementary sensors,RGB / depth / IMU,Topics available on both platforms,,Not fully verified,"Payload-, timestamp-, and TF-level equivalence still requires verification",Final thesis Table 5.5

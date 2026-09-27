@@ -1,0 +1,13 @@
+v_cmd_mps,w_cmd_radps,physical_r_act_m,initial_r_act_m,final_r_act_m,abs_sim_to_real_error_reduction_pct,physical_r_act_over_r_cmd,final_r_act_over_r_cmd,final_over_physical_ratio_ratio,source_reference
+0.2,0.2,1.25,6.59,1.22,99.5,1.25,1.223,0.978,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
+0.2,0.4,0.85,9.89,0.66,98,1.69,1.323,0.783,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
+0.2,0.6,0.63,5.75,0.43,96.1,1.89,1.298,0.687,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
+0.2,1,0.43,3.16,0.56,95.2,2.14,2.793,1.305,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
+0.4,0.2,2.58,13.19,2.44,98.7,1.29,1.219,0.945,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
+0.4,0.4,1.93,18.92,1.23,95.9,1.93,1.229,0.637,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
+0.4,0.6,1.35,11.73,0.81,94.7,2.03,1.21,0.596,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
+0.4,1,1.16,6.8,0.48,87.9,2.89,1.188,0.411,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
+0.53,0.2,3.52,17.16,3.26,98,1.33,1.229,0.924,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
+0.53,0.4,2.37,24.58,1.55,96.3,1.79,1.168,0.653,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
+0.53,0.6,2.45,15.77,1.05,89.5,2.77,1.189,0.429,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison
+0.53,1,2.14,9.1,0.62,78.1,4.03,1.16,0.288,Final thesis Table 6.6; ratio fields from Master_v32_0812 Test3 Sim-Real Comparison

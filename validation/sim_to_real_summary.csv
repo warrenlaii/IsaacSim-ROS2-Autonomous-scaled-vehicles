@@ -1,0 +1,6 @@
+test,kpi,physical_robot,initial_simulation,final_baseline,interpretation,source_reference
+Test 01,Straight-line distance / steady-speed response,"2.02 / 4.04 / 5.32 m over 10 s; steady-speed bias +13.5%, +4.0%, +3.3%",2.00 / 3.96 / 5.21 m,2.00 / 4.00 / 5.31 m,Longitudinal response preserved; physical speed-dependent command bias is not reproduced,Final thesis Table 6.5 and Section 6.4.1
+Test 03,Curved-path R_act/R_cmd,1.25-4.03,6.48-19.79,1.16-2.79; 11/12 conditions 1.16-1.33,Magnitude improved; physical demand-dependent understeer pattern not reproduced,Final thesis Section 6.4.2; Master_v32_0812 Test3 Sim-Real Comparison
+Test 07,Pose yaw over matched 5 s step,26.32 ± 1.79 deg,Not matched,45.96 ± 0.22 deg,Final baseline over-predicts matched yaw response,Final thesis Section 6.4.3
+Test 04,Accumulated yaw over 10 s at Wcmd=0.8 rad/s,228.00 deg,106.05 deg,192.14 deg Low / 272.70 deg High; complete scene 275.04 ± 0.63 deg,"Magnitude improved, but response remains branch-dependent",Final thesis Sections 6.4.4 and 6.5.1
+Test 09,Pitch sensitivity (rad/s)/(m/s^2),0.0252-0.0794,0.00180-0.00343,0.00100-0.00203,Magnitude and speed dependence remain substantially under-predicted,Final thesis Section 6.4.5

@@ -1,0 +1,7 @@
+w_cmd_radps,final_response,physical_yaw_deg,initial_yaw_deg,final_yaw_deg,final_error_vs_physical_pct,abs_sim_to_real_error_reduction_pct,reporting_note,source_reference
+0.2,Single,57.83,3.57,64.71,11.9,87.3,Single response,Final thesis Table 6.7
+0.4,Single,117.07,46.9,142.8,22,63.3,Single response,Final thesis Table 6.7
+0.6,Low,167.13,84.57,142.35,-14.8,70,Report separately from High; do not pool,Final thesis Table 6.7
+0.6,High,167.13,84.57,201.12,20.3,58.8,Report separately from Low; do not pool,Final thesis Table 6.7
+0.8,Low (Stable),228,106.05,192.14,-15.7,70.6,Flat-plane branch; report separately from High,Final thesis Table 6.7 and Section 6.4.4
+0.8,High (Oscillatory),228,106.05,272.7,19.6,63.3,Flat-plane branch; report separately from Low,Final thesis Table 6.7 and Section 6.4.4

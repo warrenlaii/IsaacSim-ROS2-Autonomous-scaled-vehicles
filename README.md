@@ -128,6 +128,13 @@ IsaacSim-ROS2-Autonomous-scaled-vehicles/
 │
 ├── calibration/
 ├── validation/
+│   ├── README.md
+│   ├── sim_to_real_summary.csv
+│   ├── test01_straight.csv
+│   ├── test03_curved.csv
+│   ├── test04_rotation.csv
+│   ├── scene_regression.csv
+│   └── ros2_acceptance.csv
 ├── docs/
 │   └── images/
 └── thesis/
@@ -321,7 +328,7 @@ The final validation showed that straight-line behaviour can be reproduced close
 
 These findings define the current **validity boundary** of the thesis baseline rather than implying exact dynamic equivalence under all operating conditions.
 
-Detailed experiment definitions, processed results, and plots should be stored under `validation/`.
+Processed validation results and the reporting boundary are provided under `validation/`.
 
 ---
 

@@ -1,0 +1,4 @@
+configuration,branch,n,yaw_mean_deg,yaw_sd_deg,low_count,high_count,delta_vs_flat_high_pct,fisher_p_vs_flat_plane,interpretation,source_reference
+Flat plane,Low (Stable),3,192.14,1.16,3,4,,,Do not pool with High branch,Final thesis Sections 4.3.4 and 6.4.4
+Flat plane,High (Oscillatory),4,272.7,8.45,3,4,,,Do not pool with Low branch,Final thesis Sections 4.3.4 and 6.4.4
+Complete RoadRunner-derived scene,High (Oscillatory),20,275.04,0.63,0,20,0.86,0.012,"Branch occupancy changed; association with scene configuration, not demonstrated causality",Final thesis Section 6.4.4
