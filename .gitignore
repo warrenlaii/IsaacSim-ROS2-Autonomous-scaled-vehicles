@@ -19,6 +19,8 @@ rosbag2_*/
 # Analysis/runtime output
 *.log
 *.tmp
+cobraflex_results*.xlsx
+results_*.xlsx
 
 # OS / editor
 .DS_Store
