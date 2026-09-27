@@ -19,3 +19,16 @@ The final OpenDRIVE file contains the repaired connector roads 306 and 322. The 
 ## Versioning
 
 Do not overwrite the `v1` map files in place. Future geometry changes should use a new versioned filename and be documented separately.
+
+
+## RL lane assets
+
+The final map package also includes lightweight, directed lane representations for downstream planning and reinforcement-learning work:
+
+| File | Purpose |
+| --- | --- |
+| `RL/lane_centrelines.csv` | Ordered centreline samples for each logical driving lane, stored in vehicle travel direction |
+| `RL/lane_network.json` | Directed predecessor/successor graph, lane metadata, lengths, and OpenDRIVE road/lane mapping |
+| `RL/README.md` | Generation conventions and coordinate/direction notes |
+
+These files are derived from the final GeoJSON and OpenDRIVE handover exports. They are convenience assets for downstream use; the versioned OpenDRIVE file remains the logical road-network source.
