@@ -87,7 +87,7 @@ It includes:
        width="850">
 </p>
 
-The final OpenDRIVE/lane-network package is part of the thesis handover baseline.
+The final road-network exchange files are provided under `roadrunner/`, including the versioned OpenDRIVE and GeoJSON files and the Junction 63 repair record.
 
 ---
 
@@ -117,6 +117,8 @@ IsaacSim-ROS2-Autonomous-scaled-vehicles/
 │
 ├── roadrunner/
 │   ├── OpenDRIVE/
+│   ├── GeoJSON/
+│   ├── docs/
 │   └── README.md
 │
 ├── calibration/
