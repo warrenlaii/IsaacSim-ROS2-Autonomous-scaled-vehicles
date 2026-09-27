@@ -1,0 +1,174 @@
+name: Release Acceptance
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  clean-clone-static:
+    name: Clean clone / LFS / static acceptance
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout clean repository with Git LFS
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          lfs: true
+
+      - name: Show checkout state
+        run: |
+          git rev-parse HEAD
+          git status --short
+          git lfs version
+          git lfs ls-files
+
+      - name: Verify formal USD LFS objects and checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          vehicle="assets/vehicle/ADMIT14_cobraflex_baseline_v1.usd"
+          environment="assets/environment/ADMIT14_RoadRunner_Map_v1.usd"
+          scene="assets/scenes/ADMIT14_Integrated_Scene_v1.usd"
+
+          test "$(stat -c%s "$vehicle")" -eq 43897964
+          test "$(stat -c%s "$environment")" -eq 1417280
+          test "$(stat -c%s "$scene")" -eq 157389486
+
+          if grep -q "version https://git-lfs.github.com/spec/v1" "$vehicle" "$environment" "$scene"; then
+            echo "One or more formal USD files are still Git LFS pointer files."
+            exit 1
+          fi
+
+          (
+            cd assets
+            sha256sum -c CHECKSUMS.sha256
+          )
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Compile maintained Python tools
+        run: |
+          python -m py_compile             ros2/control/cobraflex_test_control.py             ros2/analysis/cobraflex_rosbag_analyzer.py             ros2/analysis/cobraflex_analyzer.py             ros2/analysis/tests/test_cobraflex_analyzer.py
+
+      - name: Check handover text hygiene
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          import sys
+
+          text_suffixes = {".md", ".py", ".yaml", ".yml", ".csv", ".json"}
+          cjk = re.compile(r"[\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF]")
+          failures = []
+
+          for path in Path(".").rglob("*"):
+              if not path.is_file():
+                  continue
+              if ".git" in path.parts:
+                  continue
+              if path.suffix.lower() not in text_suffixes and path.name not in {".gitignore", ".gitattributes"}:
+                  continue
+              try:
+                  text = path.read_text(encoding="utf-8")
+              except UnicodeDecodeError:
+                  continue
+
+              if cjk.search(text):
+                  failures.append(f"CJK text found: {path}")
+              if "/home/cast/" in text:
+                  failures.append(f"Hard-coded local path found: {path}")
+
+          if failures:
+              print("\n".join(failures))
+              sys.exit(1)
+
+          print("Text hygiene: PASS")
+          PY
+
+      - name: Check local Markdown links
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.parse import unquote
+          import re
+          import sys
+
+          failures = []
+          md_link = re.compile(r"!?(?:\[[^\]]*\])\(([^)]+)\)")
+          html_src = re.compile(r"""src=["']([^"']+)["']""")
+
+          for doc in Path(".").rglob("*.md"):
+              text = doc.read_text(encoding="utf-8")
+              targets = [m.group(1).strip() for m in md_link.finditer(text)]
+              targets += [m.group(1).strip() for m in html_src.finditer(text)]
+
+              for raw in targets:
+                  raw = raw.strip("<>")
+                  if not raw or raw.startswith(("#", "http://", "https://", "mailto:")):
+                      continue
+                  target = unquote(raw.split("#", 1)[0].split("?", 1)[0])
+                  if not target:
+                      continue
+                  resolved = (doc.parent / target).resolve()
+                  try:
+                      resolved.relative_to(Path(".").resolve())
+                  except ValueError:
+                      failures.append(f"{doc}: link escapes repository: {raw}")
+                      continue
+                  if not resolved.exists():
+                      failures.append(f"{doc}: missing local target: {raw}")
+
+          if failures:
+              print("\n".join(failures))
+              sys.exit(1)
+
+          print("Local Markdown links: PASS")
+          PY
+
+      - name: Install analysis-test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install             pytest             rosbags             numpy             pandas             openpyxl             matplotlib             PyQt5             scipy             pyyaml
+
+      - name: Run analyzer regression tests
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          cd ros2/analysis
+          python -m pytest tests/test_cobraflex_analyzer.py -q
+
+      - name: Run analyzer CLI smoke test
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          python ros2/analysis/cobraflex_analyzer.py --help
+
+      - name: Static acceptance summary
+        run: |
+          {
+            echo "## Clean-clone static acceptance"
+            echo
+            echo "- GitHub-hosted clean checkout: PASS"
+            echo "- Git LFS materialization: PASS"
+            echo "- Formal USD sizes/checksums: PASS"
+            echo "- Python syntax: PASS"
+            echo "- Text hygiene: PASS"
+            echo "- Local Markdown links: PASS"
+            echo "- Analyzer regression tests: PASS"
+            echo "- Analyzer CLI smoke test: PASS"
+            echo
+            echo "Isaac Sim 6.0.0 and live ROS 2 runtime acceptance are not available on the GitHub-hosted runner and remain a workstation-level release gate."
+          } >> "$GITHUB_STEP_SUMMARY"
