@@ -998,3 +998,341 @@ class MainWindow(QMainWindow):
         if proc.poll() is not None:
             proc.wait()
             return proc
+        proc.send_signal(signal.SIGINT)
+        try:
+            proc.wait(timeout=timeout_sec)
+        except subprocess.TimeoutExpired:
+            self.ros_node.test_status_text = "Bag recorder unresponsive, forcing stop..."
+            proc.kill()
+            proc.wait()
+        return proc
+
+    def _run_repeated_trial(self, bag_name, topics, repeats, trial_label,
+                             trial_fn, w_threshold=0.02, v_threshold=0.02):
+        """Shared 'settle -> per-repeat bag -> trial' loop.
+
+        2026-07-20: extracted from what used to be Test 4's own inline
+        loop, so Tests 1/2/3/5/8/10 (which also want repeated trials from
+        a controlled at-rest starting state) don't each need a hand-copied
+        version of the same settle/bag/log bookkeeping.
+
+        trial_fn: zero-arg callable that runs one repeat's command
+        sequence (typically a closure wrapping one or more
+        self._hold_command(...) calls) and returns True/False the same
+        way _hold_command does (False = interrupted by Emergency Stop).
+
+        v_threshold=0.02 (m/s) is a default, not a universal truth -- it
+        was chosen as "same order of magnitude as the existing w
+        threshold", not measured against actual sensor noise floor.
+        Revisit if it turns out to be too tight/loose for a given test's
+        settle time.
+        """
+        for r in range(repeats):
+            if not self.ros_node.test_active: break
+            self.ros_node.test_status_text = f"{trial_label} Repeat {r+1}/{repeats}: Confirming chassis at rest"
+            settled, settle_elapsed = self._wait_for_settle(
+                w_threshold=w_threshold, v_threshold=v_threshold)
+            if not settled:
+                break
+            if not self.ros_node.test_active: break
+
+            init_x = self.ros_node.current_x
+            init_y = self.ros_node.current_y
+            init_v = self.ros_node.actual_v
+            init_w = self.ros_node.actual_w
+            sim_t = self.ros_node.sim_time_seconds()
+            print(
+                f"[{trial_label} Repeat {r+1}/{repeats}] settle_elapsed="
+                f"{settle_elapsed:.3f}s (profile clock, "
+                f"mode={self.profile_clock_mode}) | init_pose="
+                f"({init_x:.4f},{init_y:.4f}) | init_actual_v={init_v:.4f} "
+                f"m/s | init_actual_w={init_w:.4f} rad/s | sim_t="
+                f"{'N/A' if sim_t is None else f'{sim_t:.3f}s'}"
+            )
+
+            rep_bag_name = f"{bag_name}_rep{r+1}of{repeats}"
+            self.ros_node.test_status_text = (
+                f"{trial_label} Repeat {r+1}/{repeats}: Starting bag {rep_bag_name}"
+            )
+            self._start_bag_recording(rep_bag_name, topics)
+
+            # Recorder readiness has already been verified above.  Now log a
+            # complete 2.0 profile-clock seconds of zero command so the bag
+            # contains the entire 0-2s post-command transient once motion
+            # begins.  This is measured in simulation seconds when mode=sim.
+            self.ros_node.test_status_text = (
+                f"{trial_label} Repeat {r+1}/{repeats}: "
+                f"{RECORDER_PREROLL_PROFILE_SEC:.1f}s zero-cmd pre-roll"
+            )
+            pre_roll_ok = self._hold_command(
+                0.0, 0.0, RECORDER_PREROLL_PROFILE_SEC)
+            if not pre_roll_ok:
+                self._stop_bag_recording()
+                break
+
+            print(
+                f"[{trial_label} Repeat {r+1}/{repeats}] recorder_ready=yes | "
+                f"zero_cmd_preroll={RECORDER_PREROLL_PROFILE_SEC:.3f}s "
+                f"(profile clock, mode={self.profile_clock_mode})"
+            )
+
+            self.ros_node.test_status_text = f"{trial_label} Repeat {r+1}/{repeats}: Executing profile"
+            trial_ok = trial_fn()
+
+            self._stop_bag_recording()
+            empty = self._check_recorded_topics(rep_bag_name, topics)
+            if empty:
+                print(
+                    f"[{trial_label} Repeat {r+1}/{repeats}] WARNING: "
+                    f"{rep_bag_name} has 0 messages on: {empty}"
+                )
+                self.recording_check_ready.emit(empty)
+
+            if not trial_ok: break
+
+    def testing_lifecycle_thread(self, bag_name, topics, test_num, v, w,
+                                 duration, side_length, turn_factor,
+                                 pulse_cycles, repeats, requested_time_source):
+        self.ros_node.test_active = True
+        self.ros_node.reset_data()
+        self.btn_run.setEnabled(False)
+        lifecycle_error = None
+
+        try:
+            # Resolve Auto/Simulation/Real BEFORE starting rosbag so the
+            # topic set matches the environment. /odom_truth and /clock are
+            # sim-only here: always record both for a simulation-timed run,
+            # and remove them for a real/steady-timed run to avoid guaranteed
+            # 0-message warnings on the physical robot.
+            self.profile_clock_mode = self._resolve_profile_clock(requested_time_source)
+            topics = list(topics)
+            if self.profile_clock_mode == "sim":
+                for sim_topic in (SIM_ODOM_TRUTH_TOPIC, SIM_CLOCK_TOPIC):
+                    if sim_topic not in topics:
+                        topics.append(sim_topic)
+            else:
+                topics = [
+                    t for t in topics
+                    if t not in (SIM_ODOM_TRUTH_TOPIC, SIM_CLOCK_TOPIC)
+                ]
+
+            if test_num in REPEAT_ENABLED_TEST_NUMS:
+                # These tests record one bag PER REPEAT, started only
+                # after settle completes (see _run_repeated_trial) -- the
+                # #112 protocol is "reset -> settle -> THEN record", so
+                # the settle phase itself is deliberately left out of the
+                # bag instead of being captured at the front of one long
+                # multi-repeat recording.
+                self.ros_node.test_status_text = (
+                    "Per-repeat bag recording (starts after each settle)"
+                )
+            else:
+                self.ros_node.test_status_text = "Initializing Rosbag recorder..."
+                self._start_bag_recording(bag_name, topics)
+
+            clock_label = ("ROS /clock (simulation time)" if self.profile_clock_mode == "sim"
+                           else "monotonic time (real robot)")
+            self.ros_node.test_status_text = f"Timing locked: {clock_label}; pre-buffer 2s"
+            self._hold_command(0.0, 0.0, 2.0)
+
+            if test_num == 1: 
+                self._run_repeated_trial(
+                    bag_name, topics, repeats, "Test1 Acceleration",
+                    lambda: self._hold_command(v, 0.0, duration))
+
+            elif test_num == 2: 
+                def _trial_test2():
+                    if self._hold_command(v, 0.0, duration):
+                        self.ros_node.test_status_text = "Injecting Hard Brake Command"
+                        return self._hold_command(0.0, 0.0, 3.0)
+                    return False
+                self._run_repeated_trial(
+                    bag_name, topics, repeats, "Test2 Full Braking", _trial_test2)
+
+            elif test_num == 3: 
+                self._run_repeated_trial(
+                    bag_name, topics, repeats, "Test3 Circular Driving",
+                    lambda: self._hold_command(v, w, duration))
+
+            elif test_num == 4: 
+                # 2026-07-20 (#112 protocol fix): each repeat gets its own
+                # bag (test_0..._rep{N}of{M}), opened only after settle
+                # completes, plus a console line recording the settle
+                # duration (profile-clock seconds) and the initial pose --
+                # previously neither was recorded anywhere, so a repeat's
+                # starting condition had to be guessed post-hoc from
+                # /cmd_vel edges in one shared bag. Now shares
+                # _run_repeated_trial with Tests 1/2/3/5/8/10 instead of
+                # its own hand-copied loop.
+                self._run_repeated_trial(
+                    bag_name, topics, repeats, "Test4 In-place Skid-Steer",
+                    lambda: self._hold_command(0.0, w, duration))
+
+            elif test_num == 5: 
+                self._run_repeated_trial(
+                    bag_name, topics, repeats, "Test5 Max Velocity",
+                    lambda: self._hold_command(v, 0.0, duration))
+
+            elif test_num == 6: 
+                t_straight = side_length / v if v != 0 else 0
+                t_turn = ((math.pi / 2.0) / w) * turn_factor if w != 0 else 0
+                
+                for edge in range(4):
+                    if not self.ros_node.test_active: break
+                    self.ros_node.test_status_text = f"UMBmark Edge {edge+1}/4: Straight"
+                    if not self._hold_command(v, 0.0, t_straight): break
+                    
+                    if edge < 3:
+                        if not self.ros_node.test_active: break
+                        self.ros_node.test_status_text = f"UMBmark Edge {edge+1}/4: Turning"
+                        if not self._hold_command(0.0, w, t_turn): break
+
+            elif test_num == 7: 
+                self.ros_node.test_status_text = "Establishing straight trajectory base"
+                if self._hold_command(v, 0.0, 3.0):
+                    self.ros_node.test_status_text = "Injecting Step Steering Step"
+                    self._hold_command(v, w, duration)
+
+            elif test_num == 8: 
+                def _trial_test8():
+                    if self._hold_command(v, 0.0, duration):
+                        self.ros_node.test_status_text = "Cutting actuator power (Coasting)"
+                        # Actually publish the stop command (was: a bare
+                        # attribute assignment `self.ros_node.target_v = 0.0`
+                        # that never touched /cmd_vel at all -- the bag kept
+                        # recording the last nonzero command and the
+                        # actuator was never cut).
+                        self.ros_node.publish_cmd(0.0, 0.0)
+                        return self._wait_duration(6.0)
+                    return False
+                self._run_repeated_trial(
+                    bag_name, topics, repeats, "Test8 Coasting", _trial_test8)
+
+            elif test_num == 9:
+                # Weight Transfer / Pitch Test -- from the project's own
+                # Sim2Real spreadsheet (Overall sheet, row "8 Weight
+                # Transfer/Pitch Test"), targeting Isaac Sim's centerOfMass
+                # calibration. Not in the original 8-test menu.
+                # Protocol: alternate sharp forward/reverse pulses to excite
+                # pitch (dive/squat) oscillation; the analyzer reads the
+                # peak pitch rate (IMU wy) vs the achieved Ax swing.
+                # Uses the dedicated Pulse Cycles field, not Repeats --
+                # this test's own forward/reverse pulse concept isn't the
+                # same thing as a settle-then-trial repeat.
+                cycles = max(1, int(round(pulse_cycles)))
+                for c in range(cycles):
+                    if not self.ros_node.test_active: break
+                    self.ros_node.test_status_text = f"Weight-Transfer Pulse {c+1}/{cycles}: Forward"
+                    if not self._hold_command(v, 0.0, duration): break
+                    self.ros_node.test_status_text = f"Weight-Transfer Pulse {c+1}/{cycles}: Reverse"
+                    if not self._hold_command(-v, 0.0, duration): break
+
+            elif test_num == 10:
+                # Baseline Noise Floor Test (new -- not in the spreadsheet,
+                # recommended addition). Vehicle stays fully stationary the
+                # whole time: zero velocity commanded throughout. Lets the
+                # analyzer report IMU static bias/noise and ZED VIO drift
+                # while at rest, which every other test's KPI should really
+                # be interpreted relative to. Settle is trivial here since
+                # the target is already (0,0), but still goes through
+                # _run_repeated_trial for a consistent per-repeat bag +
+                # log record across repeats.
+                self._run_repeated_trial(
+                    bag_name, topics, repeats, "Test10 Baseline Noise Floor",
+                    lambda: self._hold_command(0.0, 0.0, duration))
+
+        except Exception as thread_err:
+            lifecycle_error = str(thread_err)
+            print(f"Lifecycle Execution Error: {thread_err}")
+            self.ros_node.publish_cmd(0.0, 0.0)
+            # Cleanup must not depend on a clock that may have caused the
+            # failure (for example /clock frozen at zero).
+            self.profile_clock_mode = "steady"
+            
+        self.ros_node.test_status_text = "Post-buffer logging active (1s)..."
+        # interruptible=False: this final stop command must always be sent
+        # and recorded, even if Emergency Stop already flipped test_active.
+        try:
+            self._hold_command(0.0, 0.0, 1.0, interruptible=False)
+        except Exception as cleanup_err:
+            if lifecycle_error is None:
+                lifecycle_error = str(cleanup_err)
+            self.profile_clock_mode = "steady"
+            self.ros_node.publish_cmd(0.0, 0.0)
+        
+        if self.bag_process is not None:
+            self.ros_node.test_status_text = "Finalizing and flushing data cache..."
+            self._stop_bag_recording()
+
+        # For Test 4, per-repeat bags were already checked (and any empty
+        # ones warned about) inside the loop above; bag_name itself was
+        # never created as a directory, so this correctly reports no
+        # empty topics rather than a false "bag_name not found" issue.
+        empty_topics = self._check_recorded_topics(bag_name, topics)
+        if lifecycle_error is not None:
+            self.ros_node.test_active = False
+            self.ros_node.test_status_text = (
+                f"Sequence FAILED ({bag_name}): {lifecycle_error}"
+            )
+        elif empty_topics:
+            self.recording_check_ready.emit(empty_topics)
+            self.ros_node.test_active = False
+            self.ros_node.test_status_text = (
+                f"Sequence Complete ({bag_name}) -- WARNING: "
+                f"{len(empty_topics)} topic(s) recorded 0 messages!"
+            )
+        else:
+            self.ros_node.test_active = False
+            self.ros_node.test_status_text = f"Sequence Complete ({bag_name})"
+        self.btn_run.setEnabled(True)
+
+    def update_dashboard(self):
+        self.lbl_status.setText(f"Status: {self.ros_node.test_status_text}")
+        self.lbl_dist.setText(f"Distance: {self.ros_node.total_distance:.2f} m")
+        self.lbl_battery.setText(f"Battery: {self.ros_node.battery_info}")
+        
+        with self.ui_lock:
+            if self.bag_process is not None:
+                mins, secs = divmod(int(time.time() - self.record_start_time), 60)
+                self.lbl_time.setText(f"Rec Time: {mins:02d}:{secs:02d}")
+                self.lbl_time.setStyleSheet("color: red; font-weight: bold;")
+            else:
+                self.lbl_time.setText("Rec Time: 00:00")
+                self.lbl_time.setStyleSheet("color: black;")
+
+        self.ax_traj.clear()
+        self.ax_vel.clear()
+        
+        if len(self.ros_node.traj_x) > 0:
+            self.ax_traj.plot(self.ros_node.traj_x, self.ros_node.traj_y, 'b-', label='ZED Odometry')
+            self.ax_traj.plot(self.ros_node.traj_x[0], self.ros_node.traj_y[0], 'go') 
+            self.ax_traj.plot(self.ros_node.traj_x[-1], self.ros_node.traj_y[-1], 'ro') 
+        self.ax_traj.set_title("Real-Time 2D Trajectory Map")
+        self.ax_traj.axis('equal')
+        self.ax_traj.grid(True, linestyle='--')
+        
+        if len(self.ros_node.history_v) > 0:
+            self.ax_vel.plot(self.ros_node.history_v, 'orange', label='Velocity (m/s)', linewidth=2)
+            self.ax_vel.plot(self.ros_node.history_ay, 'red', alpha=0.4, label='Lateral Accel (m/s^2)', linewidth=1)
+        self.ax_vel.set_title("Chassis Dynamic Response Indicators")
+        self.ax_vel.grid(True, linestyle='--')
+        self.ax_vel.legend(loc='upper right')
+        
+        self.canvas.draw()
+
+
+def main(args=None):
+    rclpy.init(args=args)
+    ros_node = VehicleControlNode()
+    
+    executor_thread = threading.Thread(target=rclpy.spin, args=(ros_node,), daemon=True)
+    executor_thread.start()
+    
+    app = QApplication(sys.argv)
+    app.setStyle('Fusion')
+    window = MainWindow(ros_node)
+    window.show()
+    sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()

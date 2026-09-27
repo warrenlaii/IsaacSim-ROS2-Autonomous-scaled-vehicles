@@ -998,3 +998,1247 @@ class BagAnalyzer:
                 (self.odomtruth_duplicate_count,
                  self.odomtruth_duplicate_steps,
                  self.odomtruth_duplicate_pct) = count_duplicate_samples(
+                    self.odomtruth_x, self.odomtruth_y, self.odomtruth_yaw,
+                    self.odomtruth_v, self.odomtruth_w
+                )
+                if len(self.times_odomtruth) > 1:
+                    for i in range(1, len(self.times_odomtruth)):
+                        dt = self.times_odomtruth[i] - self.times_odomtruth[i - 1]
+                        if dt > MAX_INTEGRATION_DT_SEC:
+                            self.odomtruth_stall_count += 1
+                            self.odomtruth_stall_total_sec += dt
+
+            if self.enc_ticks:
+                start_tick = self.enc_ticks[0]
+                self.enc_dist = [abs(tk - start_tick) / TICKS_PER_METER for tk in self.enc_ticks]
+
+            # Normalize timelines
+            t0 = self.times_odom[0]
+            self.times_cmd = [t - t0 for t in self.times_cmd]
+            self.times_odom = [t - t0 for t in self.times_odom]
+            self.times_enc = [t - t0 for t in self.times_enc]
+            self.times_imu = [t - t0 for t in self.times_imu]
+            self.times_bat = [t - t0 for t in self.times_bat]
+            self.times_joint = [t - t0 for t in self.times_joint]
+            self.times_pose = [t - t0 for t in self.times_pose]
+            self.times_odomtruth = [t - t0 for t in self.times_odomtruth]
+
+            # Encoder-derived velocity (d(enc_dist)/dt). The recorder only
+            # gives cumulative wheel distance; differentiate it to get a
+            # wheel-surface speed time series so it's comparable against
+            # ZED's odom_v for a Longitudinal Slip Ratio KPI (this is in
+            # the project's own analysis spec / sample output for Test 1,
+            # but wasn't actually being computed anywhere in this file).
+            if len(self.enc_dist) > 1 and len(self.times_enc) == len(self.enc_dist):
+                for i in range(1, len(self.enc_dist)):
+                    dt = self.times_enc[i] - self.times_enc[i - 1]
+                    self.enc_v.append((self.enc_dist[i] - self.enc_dist[i - 1]) / dt if dt > 1e-4 else 0.0)
+
+            # Joint-states-derived cumulative distance: integrate the
+            # wheel-surface speed (rad/s * WHEEL_RADIUS_M) over time.
+            # This is the fallback used whenever /cobraflex/wheel_speeds
+            # has no data -- currently every Isaac Sim bag, since that
+            # topic only exists on the real robot's motor driver firmware.
+            if len(self.joint_v_wheel_ms) > 1 and len(self.times_joint) == len(self.joint_v_wheel_ms):
+                for i in range(1, len(self.joint_v_wheel_ms)):
+                    dt = self.times_joint[i] - self.times_joint[i - 1]
+                    if dt > MAX_INTEGRATION_DT_SEC:
+                        # Publish-rate stall: we don't know what velocity
+                        # was actually held during this gap, so contribute
+                        # 0 distance instead of falsely assuming the last
+                        # known velocity persisted for the whole gap.
+                        self.joint_stall_count += 1
+                        self.joint_stall_total_sec += dt
+                        self.joint_dist.append(self.joint_dist[-1])
+                        continue
+                    # Trapezoidal integration on simulation/header time.
+                    # Repeated header stamps contribute dt=0 and therefore
+                    # cannot inflate the distance.
+                    step = (0.5 * (self.joint_v_wheel_ms[i - 1] +
+                                   self.joint_v_wheel_ms[i]) * dt
+                            if dt > 1e-9 else 0.0)
+                    self.joint_dist.append(self.joint_dist[-1] + step)
+
+            # --- Unified "wheel speed" signal used by the KPIs below ---
+            # Prefer the real encoder (/cobraflex/wheel_speeds) whenever it
+            # has data (i.e. real-robot bags). Fall back to the
+            # /joint_states-derived estimate otherwise (i.e. every Isaac
+            # Sim bag, since that topic doesn't exist in the ActionGraph).
+            # Never silently mix the two within one bag.
+            if self.enc_v:
+                self.wheel_speed_source = "encoder"
+                self.wheel_v = self.enc_v
+                self.wheel_dist = self.enc_dist
+                self.wheel_times = self.times_enc[1:]
+            elif self.joint_v_wheel_ms:
+                self.wheel_speed_source = "joint_states"
+                self.wheel_v = self.joint_v_wheel_ms
+                self.wheel_dist = self.joint_dist
+                self.wheel_times = self.times_joint
+            else:
+                self.wheel_speed_source = "none"
+                self.wheel_v = []
+                self.wheel_dist = [0.0]
+                self.wheel_times = []
+
+            # Per-core-topic message counts, so the UI can flag a topic
+            # that recorded 0 messages instead of silently letting every
+            # downstream KPI default to 0.0 and look like a real reading.
+            self.core_topic_counts = {
+                TOPIC_CMD_VEL: len(self.times_cmd),
+                TOPIC_ODOM: len(self.times_odom),
+                TOPIC_IMU: len(self.times_imu),
+                TOPIC_WHEEL_SPEEDS: len(self.times_enc),
+                TOPIC_BATTERY: len(self.times_bat),
+                TOPIC_JOINT_STATES: len(self.times_joint),
+                TOPIC_FEEDBACK: self.feedback_msg_count,
+                TOPIC_POSE: len(self.times_pose),
+                TOPIC_ROBOT_DESCRIPTION: 1 if self.has_urdf else 0,
+                TOPIC_TF: 1 if self.has_tf else 0,
+                TOPIC_TF_STATIC: 1 if self.has_tf else 0,
+            }
+            # /odom_truth is sim-only (no equivalent on the real robot),
+            # so it's tracked separately from core_topic_counts above --
+            # its absence must NOT trigger the "MISSING core topic"
+            # warning on real-robot bags.
+            self.optional_topic_counts = {
+                TOPIC_ODOM_TRUTH: len(self.times_odomtruth),
+            }
+            
+        except Exception as e:
+            print(f"Data Parsing Error: {e}")
+            self.core_topic_counts = {}
+            self.optional_topic_counts = {}
+
+TEST_NAMES = {
+    1: "Acceleration Test",
+    2: "Full Braking Testing",
+    3: "Steady-State Circular Driving",
+    4: "In-place Skid-Steer Test",
+    5: "Steady-State Max Velocity Test",
+    6: "Square Trajectory Test / UMBmark",
+    7: "Step Steer Input",
+    8: "Coasting Testing",
+    9: "Weight Transfer / Pitch Test",
+    10: "Baseline Noise Floor Test",
+}
+
+def identify_test_id(folder_name):
+    name = folder_name.lower()
+    if "test01" in name or "test_01" in name: return 1
+    if "test02" in name or "test_02" in name: return 2
+    if "test03" in name or "test_03" in name: return 3
+    if "test04" in name or "test_04" in name: return 4
+    if "test05" in name or "test_05" in name: return 5
+    if "test06" in name or "test_06" in name: return 6
+    if "test07" in name or "test_07" in name: return 7
+    if "test08" in name or "test_08" in name: return 8
+    if "test09" in name or "test_09" in name: return 9
+    if "test10" in name or "test_10" in name: return 10
+    return 0
+
+# ==========================================
+# Shared KPI computation (headless, no Qt)
+# ==========================================
+# Extracted out of AnalyzerMainWindow.execute_analysis so the GUI and
+# the batch script use the exact same KPI logic -- no risk of the two
+# drifting apart. Returns (rows, bag) where rows is the list of
+# (metric, value, target_param) tuples the GUI table displays, and bag
+# is the BagAnalyzer instance (needed by the GUI for plotting; the
+# batch script mostly ignores it).
+def compute_test_kpis(bag_path, test_id):
+    bag = BagAnalyzer(bag_path)
+
+    if not bag.times_odom:
+        raise ValueError("Failed to extract Odom data.")
+
+    max_cmd_v = get_active_cmd(bag.cmd_v)
+    max_cmd_w = get_active_cmd(bag.cmd_w)
+    
+    v_abs_sorted = np.sort(np.abs(bag.odom_v))
+    w_abs_sorted = np.sort(np.abs(bag.odom_w))
+    actual_v_mag = v_abs_sorted[int(len(v_abs_sorted)*0.95)] if len(v_abs_sorted) > 0 else 0.0
+    actual_w_mag = w_abs_sorted[int(len(w_abs_sorted)*0.95)] if len(w_abs_sorted) > 0 else 0.0
+    actual_v = actual_v_mag if np.mean(bag.odom_v) >= 0 else -actual_v_mag
+    actual_w = actual_w_mag if np.mean(bag.odom_w) >= 0 else -actual_w_mag
+    
+    peak_ax = bag.imu_ax[np.argmax(np.abs(bag.imu_ax))] if bag.imu_ax else 0.0
+    min_ax = min(bag.imu_ax) if bag.imu_ax else 0.0
+    peak_ay = bag.imu_ay[np.argmax(np.abs(bag.imu_ay))] if bag.imu_ay else 0.0
+    steady_ay = get_steady_state_mean(bag.imu_ay)
+
+    test_duration = bag.times_odom[-1] - bag.times_odom[0]
+
+    # --- A2 steady-state command tracking (see
+    # CobraFlex_Critical_Review_2026-07-12.md, item A2) ---
+    # The old drive-layer numbers were ambiguous: whole-run averages were
+    # ramp-contaminated (undershoot) and peak-of-differentiated-encoder was
+    # noise-inflated (300-400% garbage). Here we fit the SLOPE of each
+    # cumulative-distance channel over the steady portion of the active
+    # LINEAR command window, giving clean cruise speeds that can be compared
+    # against the command and against each other:
+    #   chassis (ZED odom pose) vs wheel (encoder / joint_states) vs command.
+    # Only meaningful when there's a sustained linear command, so it stays
+    # None for pure-rotation tests (Test 4) and is surfaced as a KPI row
+    # only when max_cmd_v is nonzero.
+    ss_cmd_t0, ss_cmd_t1 = active_command_window(bag.times_cmd, bag.cmd_v)
+    ss_chassis_v = steady_state_velocity_from_distance(
+        bag.times_odom, bag.odom_dist, ss_cmd_t0, ss_cmd_t1)
+    ss_wheel_v = None
+    if bag.wheel_speed_source == "encoder":
+        ss_wheel_v = steady_state_velocity_from_distance(
+            bag.times_enc, bag.enc_dist, ss_cmd_t0, ss_cmd_t1)
+    elif bag.wheel_speed_source == "joint_states":
+        ss_wheel_v = steady_state_velocity_from_distance(
+            bag.times_joint, bag.joint_dist, ss_cmd_t0, ss_cmd_t1)
+
+
+    # (not a noisy real-world measurement) is fine here -- it's a
+    # controller setpoint, not subject to publish-rate stalls the way
+    # a measured signal is.
+    target_yaw_angle = safe_trapz(bag.cmd_w, bag.times_cmd) if len(bag.cmd_w) > 1 else 0.0
+
+    # Actual rotation: derived directly from the orientation quaternion
+    # (unwrap-summed absolute yaw deltas), NOT from trapezoidal
+    # integration of odom.twist.angular.z. The old trapz(bag.odom_w,...)
+    # approach silently mis-estimates total rotation whenever there's a
+    # publish-rate gap in /zed/zed_node/odom (Isaac Sim render/physics
+    # hiccups, DDS hiccups): it has to guess what angular velocity held
+    # during the gap, which can badly over- or under-estimate a large
+    # chunk of the total. This method only needs the yaw value AT each
+    # received sample to be correct, so gaps just mean fewer samples,
+    # not a fabricated/lost rotation -- same principle used by
+    # angular_velocity_sweep.py's live tracking, so bag-based and
+    # live-tracked results are now directly comparable.
+    actual_yaw_angle = cumulative_unwrapped_angle(bag.odom_yaw) if bag.odom_yaw else 0.0
+
+    # Odometry-pose/gyro cross-check (Test 4 & 7 use this -- see
+    # gyro_integrated_yaw docstring). In Isaac Sim, /zed/zed_node/odom is
+    # fed by isaac_compute_odometry and must not be described as ZED VIO.
+    gyro_yaw_angle = gyro_integrated_yaw(bag.times_imu, bag.imu_wz) if bag.imu_wz else 0.0
+    yaw_gyro_disagreement_deg = math.degrees(abs(abs(actual_yaw_angle) - abs(gyro_yaw_angle)))
+    YAW_GYRO_DISAGREEMENT_THRESHOLD_DEG = 30.0  # same threshold as angular_velocity_sweep_v7.py
+
+    # Pose/gyro ratio. With the corrected physics-step graph and common ROS
+    # header clock, the two channels should agree near 100%. A persistent
+    # deviation is a data-quality flag; it is not by itself proof of VIO
+    # failure because the odometry producer differs between sim and real.
+    pose_gyro_ratio = (abs(actual_yaw_angle) / abs(gyro_yaw_angle)) if abs(gyro_yaw_angle) > 1e-3 else None
+    pose_gyro_str = f" | pose/gyro: {pose_gyro_ratio*100:.1f}%" if pose_gyro_ratio is not None else ""
+    
+    zed_dist_final = bag.odom_dist[-1] if bag.odom_dist else 0.0
+    wheel_dist_final = bag.wheel_dist[-1] if bag.wheel_dist else 0.0
+    # Label the wheel-side number by its actual source so a reader
+    # never mistakes a /joint_states-derived estimate (sim bags) for
+    # a real /cobraflex/wheel_speeds encoder reading (real-robot bags).
+    wheel_src_label = {
+        "encoder": "Enc",
+        "joint_states": "Enc~(from /joint_states)",
+        "none": "Enc(N/A)",
+    }[bag.wheel_speed_source]
+    start_x, start_y = bag.odom_x[0], bag.odom_y[0]
+    end_x, end_y = bag.odom_x[-1], bag.odom_y[-1]
+    # Same value as bag.odom_endpoint_disp (computed once in BagAnalyzer via
+    # compute_path_and_endpoint) -- kept as a local alias since test_id==6
+    # below already reads it under this name.
+    euclidean_dist = bag.odom_endpoint_disp
+    
+    dist_error = abs(zed_dist_final - wheel_dist_final)
+    if bag.wheel_speed_source == "none":
+        dist_str = f"{zed_dist_final:.3f} m (wheel-side unavailable)"
+    elif dist_error > 0.05:
+        dist_str = f"Odom: {zed_dist_final:.3f} m | {wheel_src_label}: {wheel_dist_final:.3f} m"
+    else:
+        dist_str = f"{zed_dist_final:.3f} m"
+        
+    sys_status_str = f"URDF Valid: {'Yes' if bag.has_urdf else 'No'} | TF: {'Active' if bag.has_tf else 'Inactive'}"
+    if bag.feedback_msg_count == 0:
+        fb_status_str = f"N/A -- {TOPIC_FEEDBACK} not present"
+    elif bag.feedback_warnings > 0:
+        fb_status_str = f"{bag.feedback_warnings} Warnings Detected"
+    else:
+        fb_status_str = "Nominal (No Errors)"
+
+    odomtruth_count = getattr(bag, 'optional_topic_counts', {}).get(TOPIC_ODOM_TRUTH, 0)
+    is_sim_bag = (odomtruth_count > 0 or
+                  (bag.wheel_speed_source == "joint_states" and len(bag.times_enc) == 0))
+    sim_optional_topics = {TOPIC_WHEEL_SPEEDS, TOPIC_FEEDBACK, TOPIC_POSE} if is_sim_bag else set()
+    missing_topics = [
+        t for t, c in getattr(bag, 'core_topic_counts', {}).items()
+        if c == 0 and t not in sim_optional_topics
+    ]
+    if missing_topics:
+        completeness_str = "⚠ MISSING: " + ", ".join(missing_topics)
+    else:
+        completeness_str = ("OK -- required sim topics have data" if is_sim_bag
+                            else "OK -- all required real-robot topics have data")
+    optional_absent = [
+        t for t in sim_optional_topics
+        if getattr(bag, 'core_topic_counts', {}).get(t, 0) == 0
+    ]
+    if optional_absent:
+        completeness_str += " | sim-optional absent: " + ", ".join(sorted(optional_absent))
+    # /odom_truth is optional (sim-only), so its absence is a plain note,
+    # not a "⚠ MISSING" warning -- avoids false alarms on real-robot bags.
+    completeness_str += f" | {TOPIC_ODOM_TRUTH}: {'available (' + str(odomtruth_count) + ' msgs)' if odomtruth_count > 0 else 'not present (expected on real-robot bags)'}"
+
+    wheel_source_str = {
+        "encoder": "Real /cobraflex/wheel_speeds (real-robot bag)",
+        "joint_states": "Derived from /joint_states x wheel radius (sim bag -- wheel_speeds not published by ActionGraph)",
+        "none": "UNAVAILABLE -- neither wheel_speeds nor joint_states had data",
+    }[bag.wheel_speed_source]
+
+    odom_timing = getattr(bag, 'timing_stats', {}).get(TOPIC_ODOM, {})
+    joint_timing = getattr(bag, 'timing_stats', {}).get(TOPIC_JOINT_STATES, {})
+
+    def _fmt_rate(value):
+        return f"{value:.2f} Hz" if value is not None else "N/A"
+
+    if odom_timing:
+        source = odom_timing.get("source", "unknown")
+        if source == "header.stamp":
+            if is_sim_bag:
+                timebase_str = (
+                    f"ROS header.stamp (simulation time) | odom sim: "
+                    f"{_fmt_rate(odom_timing.get('analysis_rate'))} over "
+                    f"{odom_timing.get('analysis_span', 0.0):.3f}s | rosbag arrival: "
+                    f"{_fmt_rate(odom_timing.get('record_rate'))} over "
+                    f"{odom_timing.get('record_span', 0.0):.3f}s | "
+                    f"RTF: {odom_timing.get('rtf', 0.0):.3f}"
+                )
+                timebase_note = "PASS: simulation integration uses header time; arrival time is diagnostic only"
+            else:
+                timebase_str = (
+                    f"ROS header.stamp (real sensor time) | odom: "
+                    f"{_fmt_rate(odom_timing.get('analysis_rate'))} over "
+                    f"{odom_timing.get('analysis_span', 0.0):.3f}s | rosbag arrival: "
+                    f"{_fmt_rate(odom_timing.get('record_rate'))} over "
+                    f"{odom_timing.get('record_span', 0.0):.3f}s | RTF: N/A (real robot)"
+                )
+                timebase_note = "PASS: real /cmd_vel uses record time; stamped sensors keep header time"
+        else:
+            timebase_str = f"{source} | odom rate: {_fmt_rate(odom_timing.get('analysis_rate'))}"
+            timebase_note = "Fallback for bags without a usable ROS header clock; verify RTF=1 for simulation bags"
+    else:
+        timebase_str = "Unavailable"
+        timebase_note = "Cannot verify integration clock"
+
+    # /joint_states publish rate, contract requirement >=30 Hz. Same
+    # header.stamp vs MCAP-arrival split as the odom timebase row above;
+    # reuses the timing_statistics() result already computed for
+    # TOPIC_JOINT_STATES instead of assuming it tracks the odom rate.
+    JOINT_STATES_CONTRACT_HZ = 30.0
+    if joint_timing and joint_timing.get("analysis_rate") is not None:
+        joint_source = joint_timing.get("source", "unknown")
+        joint_rate_val = joint_timing.get("analysis_rate")
+        joint_rate_str = (
+            f"{joint_source} | joint_states: {_fmt_rate(joint_rate_val)} over "
+            f"{joint_timing.get('analysis_span', 0.0):.3f}s | MCAP arrival: "
+            f"{_fmt_rate(joint_timing.get('record_rate'))} over "
+            f"{joint_timing.get('record_span', 0.0):.3f}s"
+        )
+        joint_rate_note = (
+            f"{'PASS' if joint_rate_val >= JOINT_STATES_CONTRACT_HZ else 'FAIL'}"
+            f" -- contract requires >={JOINT_STATES_CONTRACT_HZ:.0f} Hz"
+        )
+    else:
+        joint_rate_str = "Unavailable"
+        joint_rate_note = "Cannot verify /joint_states publish rate"
+
+    base_rows = [
+        ("Data Completeness Check", completeness_str, "Sanity Check (Recorder Config)"),
+        ("Analysis Timebase", timebase_str, timebase_note),
+        ("Joint-States Publish Rate", joint_rate_str, joint_rate_note),
+        ("Wheel-Speed Data Source", wheel_source_str, "Affects: Slip Ratio, Distance Calibration"),
+    ]
+    if joint_timing and joint_timing.get("duplicate_timestamps", 0) > 0:
+        joint_steps = max(joint_timing.get("count", 0) - 1, 1)
+        base_rows.append((
+            "⚠ Duplicate Joint-State Timestamps",
+            f"{joint_timing['duplicate_timestamps']}/{joint_steps} intervals "
+            f"({joint_timing['duplicate_pct']:.1f}%) have identical header stamps; dt=0 and add zero distance",
+            "Publisher still duplicates joint_states, but cannot inflate header-time integration"
+        ))
+    if bag.joint_stall_count > 0:
+        base_rows.append((
+            "⚠ Simulation-Time Data Gap (joint_states)",
+            f"{bag.joint_stall_count} header-time gap(s) > {MAX_INTEGRATION_DT_SEC}s on /joint_states, total {bag.joint_stall_total_sec:.2f}s excluded from distance integral",
+            "Stamped state gap -- inspect the publisher; MCAP arrival jitter alone does not trigger this"
+        ))
+    if bag.odom_stall_count > 0:
+        base_rows.append((
+            "⚠ Simulation-Time Data Gap (odom)",
+            f"{bag.odom_stall_count} header-time gap(s) > {MAX_INTEGRATION_DT_SEC}s on /zed/zed_node/odom, total {bag.odom_stall_total_sec:.2f}s",
+            "Stamped odometry gap -- inspect the physics-step publisher; MCAP arrival jitter alone does not trigger this"
+        ))
+
+    # --- Three-path distance cross-check ---
+    # Historical A1 bags mixed wall time and simulation time and therefore
+    # showed a false straight-line shortfall. Keep the three paths visible as
+    # a regression check: corrected bags should have odom, joint-derived, and
+    # odom_truth distance in close agreement.
+    joint_path_dist = bag.joint_dist[-1] if len(bag.joint_dist) > 1 else None
+    odomtruth_path_dist = bag.odomtruth_dist[-1] if len(bag.odomtruth_dist) > 1 else None
+    odomtruth_endpoint_disp = bag.odomtruth_endpoint_disp if bag.odomtruth_x else None
+
+    def _fmt_or_na(v):
+        return f"{v:.3f} m" if v is not None else "N/A"
+
+    if test_id == 4:
+        path_metric = "Motion Distance Summary (Pure Rotation)"
+        path_value = (
+            f"Chassis-center path (Odom): {_fmt_or_na(zed_dist_final)} | "
+            f"Mean wheel-surface travel: {_fmt_or_na(joint_path_dist)} | "
+            f"Chassis-center path (OdomTruth): {_fmt_or_na(odomtruth_path_dist)}"
+        )
+        path_note = (
+            "Wheel travel and chassis-center path are not expected to match "
+            "during in-place rotation; use endpoint drift and yaw tracking as KPIs"
+        )
+    else:
+        path_metric = "Distance Cross-Check (Path-Integrated)"
+        path_value = (
+            f"Odom: {_fmt_or_na(zed_dist_final)} | "
+            f"JointStates: {_fmt_or_na(joint_path_dist)} | "
+            f"OdomTruth: {_fmt_or_na(odomtruth_path_dist)}"
+        )
+        path_note = "Cross-check odometry, wheel-derived distance, and sim ground truth"
+    base_rows.append((path_metric, path_value, path_note))
+    base_rows.append((
+        "Distance Cross-Check (Endpoint Displacement)",
+        f"Odom: {_fmt_or_na(bag.odom_endpoint_disp)} | OdomTruth: {_fmt_or_na(odomtruth_endpoint_disp)}",
+        "Endpoint displacement uses only first/last samples; compare with path distance above"
+    ))
+    odom_dup_title = ("⚠ Duplicate Odom Samples" if bag.odom_duplicate_count > 0
+                      else "Odometry Duplicate Check")
+    odom_dup_status = ("re-published samples detected" if bag.odom_duplicate_count > 0
+                       else "PASS -- no repeated pose samples")
+    base_rows.append((
+        odom_dup_title,
+        f"{bag.odom_duplicate_count}/{bag.odom_duplicate_steps} moving steps "
+        f"({bag.odom_duplicate_pct:.1f}%) | {odom_dup_status}",
+        "#101: full x/y/yaw pose check during reported motion; stationary pre-roll excluded"
+    ))
+    if bag.times_odomtruth:
+        truth_dup_title = ("⚠ Duplicate Odom-Truth Samples" if bag.odomtruth_duplicate_count > 0
+                           else "Odom-Truth Duplicate Check")
+        truth_dup_status = ("re-published samples detected" if bag.odomtruth_duplicate_count > 0
+                            else "PASS -- no repeated pose samples")
+        base_rows.append((
+            truth_dup_title,
+            f"{bag.odomtruth_duplicate_count}/{bag.odomtruth_duplicate_steps} moving steps "
+            f"({bag.odomtruth_duplicate_pct:.1f}%) | {truth_dup_status}",
+            "#101: full x/y/yaw pose check during reported motion; compare with odom"
+        ))
+
+    # --- A2 Steady-State Command Tracking ---
+    # Clean cruise-speed comparison (slope-fit over the steady window, so
+    # no ramp contamination and no differentiation noise). Answers: does the
+    # WHEEL overshoot the command (true drive-layer behaviour), and does the
+    # CHASSIS overshoot it? If wheel~cmd but chassis>cmd the discrepancy is
+    # NOT the drive layer; if both overshoot, the drive layer itself does.
+    # Only emitted for tests with a sustained linear command.
+    if abs(max_cmd_v) > 0.05 and (ss_chassis_v is not None or ss_wheel_v is not None):
+        def _spd_pct(v):
+            return f"{v:.3f} m/s ({v/abs(max_cmd_v)*100:.1f}% of cmd)" if v is not None else "N/A"
+        wheel_lbl = {
+            "encoder": "Wheel(enc)",
+            "joint_states": "Wheel(joint_states, sim)",
+            "none": "Wheel(N/A)",
+        }[bag.wheel_speed_source]
+        wheel_chassis_str = ""
+        if ss_wheel_v is not None and ss_chassis_v is not None and ss_chassis_v > 1e-3:
+            wheel_chassis_str = f" | wheel/chassis: {ss_wheel_v/ss_chassis_v*100:.1f}%"
+        base_rows.append((
+            "Steady-State Command Tracking (A2)",
+            f"Chassis(Odom): {_spd_pct(ss_chassis_v)} | {wheel_lbl}: {_spd_pct(ss_wheel_v)}{wheel_chassis_str}",
+            "A2: slope-fit cruise speed, ramp/noise-free -- localizes straight-line gap to actuation vs contact layer"
+        ))
+
+    if test_id == 4:
+        total_distance_value = (
+            f"Chassis-center path (Odom): {zed_dist_final:.3f} m | "
+            f"Mean wheel-surface travel: {_fmt_or_na(wheel_dist_final)}"
+        )
+        total_distance_note = (
+            "Pure rotation: these distances have different physical meanings; "
+            "do not interpret their difference as longitudinal slip"
+        )
+    else:
+        total_distance_value = dist_str
+        total_distance_note = "Slip & Distance Calibration"
+
+    base_rows += [
+        ("Target Velocity (V, W)", f"V: {max_cmd_v:.3f} m/s | W: {max_cmd_w:.3f} rad/s" if max_cmd_v != 0.0 or max_cmd_w != 0.0 else "No Data / 0.000", "Command Target"),
+        ("Actual Velocity (V, W)", f"V: {actual_v:.3f} m/s | W: {actual_w:.3f} rad/s", "Kinematics Analysis"),
+        ("Test Duration", f"{test_duration:.2f} s", "General Info"),
+        ("Start -> End Coordinates", f"({start_x:.2f}, {start_y:.2f}) -> ({end_x:.2f}, {end_y:.2f})", "General Info"),
+        ("Total Distance Traveled", total_distance_value, total_distance_note),
+        ("System Architecture Status", sys_status_str, "Digital Twin Synchronization"),
+        ("Hardware Feedback Status", fb_status_str, "Actuator Overload Check")
+    ]
+
+    specific_rows = []
+    
+    if test_id == 1: 
+        v_smooth = smooth_data(bag.odom_v, 9)
+        rise_time, overshoot, effective_ax = None, None, None
+        peak_joint_v = max(bag.joint_v) if bag.joint_v else 0.0
+
+        target_abs = abs(max_cmd_v)
+        achieved_speed = (ss_chassis_v if ss_chassis_v is not None
+                          else abs(actual_v))
+        reached_target_band = (target_abs > 0 and
+                               achieved_speed >= 0.90 * target_abs)
+        if abs(actual_v) > 0.05 and reached_target_band:
+            try:
+                v_abs = np.abs(v_smooth)
+                idx_10 = next(i for i, v in enumerate(v_abs) if v >= 0.1*target_abs)
+                idx_90 = next(i for i, v in enumerate(v_abs) if v >= 0.9*target_abs)
+                rise_time = bag.times_odom[idx_90] - bag.times_odom[idx_10]
+                if rise_time > 0:
+                    effective_ax = (0.8 * target_abs) / rise_time
+                max_peak_v = max(v_abs)
+                overshoot = ((max_peak_v - target_abs) / target_abs) * 100.0
+            except StopIteration:
+                rise_time, overshoot, effective_ax = None, None, None
+
+        if reached_target_band:
+            rise_time_str = f"{rise_time:.3f} s" if rise_time is not None else "N/A -- threshold crossing not observed"
+            effective_ax_str = f"{effective_ax:.3f} m/s^2" if effective_ax is not None else "N/A -- rise time unavailable"
+            overshoot_str = f"{max(0.0, overshoot):.1f} %" if overshoot is not None else "N/A -- target crossing unavailable"
+        else:
+            saturation_note = (
+                f"target not reached; steady speed {achieved_speed:.3f} m/s "
+                f"({achieved_speed / target_abs * 100.0:.1f}% of command)"
+                if target_abs > 0 else "no nonzero target"
+            )
+            rise_time_str = f"N/A -- {saturation_note}"
+            effective_ax_str = f"N/A -- {saturation_note}"
+            overshoot_str = f"N/A -- {saturation_note}"
+
+        # Longitudinal slip from STEADY-STATE cruise speeds (slope-fit),
+        # not peak-of-differentiated wheel speed. The old peak method used
+        # max(|d(enc_dist)/dt|), which on real encoder data spikes to
+        # 300-400% of the true speed from quantization/timing jitter and
+        # produced meaningless slip numbers. ss_wheel_v / ss_chassis_v are
+        # the ramp-free, noise-free cruise speeds computed above.
+        if ss_wheel_v is not None and ss_wheel_v > 0.05 and ss_chassis_v is not None:
+            slip_ratio = (ss_wheel_v - ss_chassis_v) / ss_wheel_v * 100.0
+            slip_wheel_disp, slip_chassis_disp = ss_wheel_v, ss_chassis_v
+        else:
+            slip_ratio = 0.0
+            slip_wheel_disp = ss_wheel_v if ss_wheel_v is not None else 0.0
+            slip_chassis_disp = ss_chassis_v if ss_chassis_v is not None else abs(actual_v)
+        slip_note = {
+            "encoder": "",
+            "joint_states": " [wheel speed from /joint_states, sim bag]",
+            "none": " [NO WHEEL-SPEED DATA -- number is not meaningful]",
+        }[bag.wheel_speed_source]
+
+        specific_rows = [
+            ("Peak Transient Accel Magnitude (IMU)", f"{abs(peak_ax):.3f} m/s^2", "Reference for Suspension Stiffness"),
+            ("Effective Sustained Accel", effective_ax_str, "Rigid Body: Mass / Joint Torque"),
+            ("Rise Time (10-90%)", rise_time_str, "Joint: Stiffness (P-Gain)"),
+            ("Overshoot Peak", overshoot_str, "Joint: Damping (D-Gain)"),
+            ("Peak Actuator Velocity", f"{peak_joint_v:.3f} rad/s", "Joint: Target Velocity Limit"),
+            ("Longitudinal Slip Ratio", f"{slip_ratio:.1f} % (steady wheel {slip_wheel_disp:.3f} vs chassis {slip_chassis_disp:.3f} m/s){slip_note}", "Material: Dynamic Friction (Slip Curve)"),
+        ]
+
+    elif test_id == 2: 
+        pitch_rate = max(np.abs(bag.imu_wy)) if bag.imu_wy else 0.0
+        peak_brake_eff = max(bag.joint_eff) if bag.joint_eff else 0.0
+        braking_distance, effective_decel = 0.0, 0.0
+        wheel_lock_ratio = 0.0
+        
+        if bag.cmd_v:
+            brake_trigger_indices = [i for i, v in enumerate(bag.cmd_v) if v == 0.0 and i > len(bag.cmd_v)*0.2]
+            if brake_trigger_indices:
+                t_brake = bag.times_cmd[brake_trigger_indices[0]]
+                odom_brake_idx = min(range(len(bag.times_odom)), key=lambda i: abs(bag.times_odom[i] - t_brake))
+                v_initial = bag.odom_v[odom_brake_idx]
+                dx = bag.odom_x[-1] - bag.odom_x[odom_brake_idx]
+                dy = bag.odom_y[-1] - bag.odom_y[odom_brake_idx]
+                braking_distance = math.hypot(dx, dy)
+                if braking_distance > 0.01:
+                    effective_decel = (v_initial**2) / (2.0 * braking_distance)
+
+                # Wheel-lock / slip check during the braking segment,
+                # same signal pairing as Test 1/5's slip ratio (wheel
+                # surface speed vs chassis speed) but evaluated after
+                # the brake trigger instead of at steady-state cruise.
+                # A wheel that stops (locks) faster than the chassis
+                # decelerates shows up here as wheel_v << odom_v.
+                if bag.wheel_v and bag.wheel_times:
+                    wj_idx = [i for i, t in enumerate(bag.wheel_times) if t >= t_brake]
+                    wo_idx = [i for i, t in enumerate(bag.times_odom) if t >= t_brake]
+                    if wj_idx and wo_idx:
+                        peak_wheel_v_brake = max(np.abs([bag.wheel_v[i] for i in wj_idx])) if wj_idx else 0.0
+                        peak_chassis_v_brake = max(np.abs([bag.odom_v[i] for i in wo_idx])) if wo_idx else 0.0
+                        if peak_chassis_v_brake > 0.05:
+                            wheel_lock_ratio = ((peak_chassis_v_brake - peak_wheel_v_brake) / peak_chassis_v_brake) * 100.0
+
+        wheel_note = {
+            "encoder": "",
+            "joint_states": " [from /joint_states, sim bag]",
+            "none": " [N/A -- no wheel-speed data]",
+        }[bag.wheel_speed_source]
+
+        specific_rows = [
+            ("Peak Transient Decel (IMU)", f"{min_ax:.3f} m/s^2", "Reference for Suspension Dive"),
+            ("Effective Braking Decel", f"{effective_decel:.3f} m/s^2", "Material: Dynamic Friction"),
+            ("Braking Distance", f"{braking_distance:.3f} m", "Joint: Max Force limit"),
+            ("Wheel-Lock Ratio (Braking)", f"{wheel_lock_ratio:.1f} %{wheel_note}", "Material: Dynamic Friction -- >0 means wheel decelerating faster than chassis (skid)"),
+            ("Pitch Angle / Dive", f"Peak Rate: {pitch_rate:.3f} rad/s", "Rigid Body: COM Z-Offset"),
+            ("Peak Braking Effort", f"{peak_brake_eff:.2f} Nm/A", "Joint: Max Effort Calibration")
+        ]
+
+    elif test_id == 3: # Steady-State Circular Driving
+        radius = abs(actual_v / actual_w) if abs(actual_w) > 0.01 else 0.0
+        r_cmd = abs(max_cmd_v / max_cmd_w) if abs(max_cmd_w) > 0.01 else 0.0
+        theoretical_ay = (actual_v ** 2 / radius) if radius > 0.01 else 0.0
+
+        if r_cmd > 0.01 and radius > 0.01:
+            if radius < r_cmd * 0.9:
+                steer_behavior = f"Oversteer (R_cmd {r_cmd:.2f}m -> R_actual {radius:.2f}m)"
+            elif radius > r_cmd * 1.1:
+                steer_behavior = f"Understeer (R_cmd {r_cmd:.2f}m -> R_actual {radius:.2f}m)"
+            else:
+                steer_behavior = f"Neutral (R_cmd {r_cmd:.2f}m ~ R_actual {radius:.2f}m)"
+        else:
+            steer_behavior = "Insufficient data (need sustained V and W)"
+
+        # Slip Angle (beta): angle between the chassis heading and its
+        # actual velocity vector during the steady-state turn, from the
+        # ratio of lateral to longitudinal odom velocity.
+        slip_angle_deg = 0.0
+        if bag.odom_vy and bag.odom_v:
+            vy_ss = get_steady_state_mean(bag.odom_vy)
+            vx_ss = get_steady_state_mean(bag.odom_v)
+            if abs(vx_ss) > 0.05:
+                slip_angle_deg = math.degrees(math.atan2(vy_ss, vx_ss))
+
+        specific_rows = [
+            ("Commanded Radius (R_cmd = v/w)", f"{r_cmd:.3f} m", "Reference: ideal no-slip radius"),
+            ("Peak Transient Lat-Accel Magnitude", f"{abs(peak_ay):.3f} m/s^2", "Reference for Chassis Roll"),
+            ("Steady-State Lat-Accel (Measured)", f"{steady_ay:.3f} m/s^2", "Material: Lateral Friction"),
+            ("Theoretical Centripetal Accel (v^2/R)", f"{theoretical_ay:.3f} m/s^2", "Compare vs measured Ay -> slip indicator"),
+            ("Steady-state Radius (Actual)", f"{radius:.3f} m", "Friction Combine Mode"),
+            ("Slip Behavior", steer_behavior, "Rigid Body: COM X/Y-Offset"),
+            ("Slip Angle (Steady-State)", f"{slip_angle_deg:.2f} deg", "Material: Lateral Friction, Friction Combine Mode"),
+        ]
+
+    elif test_id == 4: # In-place Skid-Steer Test
+        # 1. Angular displacement via integral (whole-run, LEGACY -- see
+        # note on the row below for why this can be time-window-misaligned)
+        rotational_slip = 0.0
+        angular_tracking_ratio = 0.0
+        if abs(target_yaw_angle) > 0.01:
+            rotational_slip = ((abs(target_yaw_angle) - abs(actual_yaw_angle)) / abs(target_yaw_angle)) * 100.0
+            # Same comparison as rotational_slip, expressed as
+            # actual/target*100. This is a tracking ratio: values below
+            # 100% are under-tracking and values above 100% are overshoot.
+            angular_tracking_ratio = (abs(actual_yaw_angle) / abs(target_yaw_angle)) * 100.0
+
+        # 1b. Steady-state tracking ratio, FIXED 2-9s window relative to
+        # command start (CobraFlex_Work_Log_2026-07-20.md Section 11,
+        # Section 13: this is now the authoritative Test 4 tracking
+        # metric; the whole-run integral above is kept only as a legacy
+        # diagnostic). Fitting a slope over an explicit common window
+        # (instead of integrating bag.cmd_w and bag.odom_yaw separately
+        # over whatever range each happened to have data) removes the
+        # time-window misalignment that produced spurious 33%/39%/48%
+        # readings when the first few odometry samples were missing.
+        rot_cmd_t0, rot_cmd_t1 = active_command_window(bag.times_cmd, bag.cmd_w)
+        ss_w_t0 = ss_w_t1 = None
+        steady_state_w = None
+        steady_state_tracking_ratio = None
+        steady_state_status = None
+        if rot_cmd_t0 is not None and rot_cmd_t1 is not None:
+            ss_w_t0 = rot_cmd_t0 + 2.0
+            ss_w_t1 = rot_cmd_t0 + 9.0
+            odom_t0, odom_t1 = bag.times_odom[0], bag.times_odom[-1]
+            if rot_cmd_t1 < ss_w_t1 - ANALYSIS_WINDOW_TOL_SEC:
+                steady_state_status = (
+                    "N/A -- sustained command ended before the complete 2-9s "
+                    "steady-state window"
+                )
+            elif (odom_t0 > ss_w_t0 + ANALYSIS_WINDOW_TOL_SEC
+                  or odom_t1 < ss_w_t1 - ANALYSIS_WINDOW_TOL_SEC):
+                steady_state_status = (
+                    "N/A -- odometry does not cover the complete 2-9s "
+                    "post-command window"
+                )
+            else:
+                steady_state_w = rotational_steady_state_from_yaw(
+                    bag.times_odom, bag.odom_yaw, ss_w_t0, ss_w_t1)
+                if steady_state_w is not None and abs(max_cmd_w) > 0.01:
+                    steady_state_tracking_ratio = abs(steady_state_w) / abs(max_cmd_w) * 100.0
+                else:
+                    steady_state_status = (
+                        "N/A -- too few odometry samples for the complete 2-9s fit"
+                    )
+        else:
+            steady_state_status = "N/A -- no sustained active command window found"
+
+        # 1c. Startup transient (cmd_t0 to cmd_t0+2s), reported separately
+        # instead of being silently averaged into the tracking ratio --
+        # this is where the reset-first pivot anomaly (see Work Log
+        # Section 3-9) actually lived, and where any future step-response
+        # characterization should look.
+        transient_w_mean = None
+        transient_t0 = transient_t1 = None
+        transient_status = None
+        if rot_cmd_t0 is not None:
+            requested_t0 = rot_cmd_t0
+            requested_t1 = rot_cmd_t0 + 2.0
+            odom_t0, odom_t1 = bag.times_odom[0], bag.times_odom[-1]
+            if requested_t0 < odom_t0 - ANALYSIS_WINDOW_TOL_SEC:
+                transient_status = (
+                    "N/A -- command began before the first odometry sample; "
+                    "recorder pre-roll was not captured"
+                )
+            elif (rot_cmd_t1 is not None
+                  and rot_cmd_t1 < requested_t1 - ANALYSIS_WINDOW_TOL_SEC):
+                transient_status = (
+                    "N/A -- sustained command ended before the complete 0-2s window"
+                )
+            elif odom_t1 < requested_t1 - ANALYSIS_WINDOW_TOL_SEC:
+                transient_status = (
+                    "N/A -- odometry does not cover the complete 0-2s "
+                    "post-command window"
+                )
+            else:
+                # Clamp only sub-tolerance negative roundoff (for example
+                # -0.00s after record/header mapping) to the first odom sample.
+                transient_t0 = max(requested_t0, odom_t0)
+                transient_t1 = requested_t1
+                transient_vals = [abs(w) for t, w in zip(bag.times_odom, bag.odom_w)
+                                  if transient_t0 <= t <= transient_t1]
+                if transient_vals:
+                    transient_w_mean = float(np.mean(transient_vals))
+                else:
+                    transient_status = "N/A -- no odometry samples in the complete 0-2s window"
+        else:
+            transient_status = "N/A -- no sustained active command window found"
+
+        # 2. Breakaway detection at the CHASSIS level: first command
+        # magnitude at which the chassis (odom yaw rate) actually starts
+        # moving. This is the static-friction breakaway point as seen
+        # by the ground/tire interface.
+        breakaway_cmd_w = None
+        w_smooth = zero_phase_filter(bag.odom_w, 9)
+        for i, w_val in enumerate(w_smooth):
+            if abs(w_val) > 0.05:
+                t_break = bag.times_odom[i]
+                cmd_idx = (np.abs(np.array(bag.times_cmd) - t_break)).argmin()
+                cmd_at_break = abs(bag.cmd_w[cmd_idx])
+                # Ignore chassis/estimator noise that occurs before the
+                # actual yaw command. A zero command is not a breakaway KPI.
+                if cmd_at_break > 0.01:
+                    breakaway_cmd_w = cmd_at_break
+                    break
+
+        # 3. Breakaway detection at the WHEEL/ACTUATOR level: first
+        # command magnitude at which the wheel itself starts spinning
+        # (bag.wheel_v -- real encoder on the real robot, /joint_states
+        # derived on sim bags). On a perfectly rigid driveline this
+        # should match the chassis-level breakaway above; a large gap
+        # points at driveline compliance/backlash rather than pure
+        # ground-contact static friction.
+        breakaway_cmd_w_wheel = None
+        if bag.wheel_v and bag.wheel_times and bag.times_cmd:
+            wv_smooth = zero_phase_filter(bag.wheel_v, 9)
+            for i, wv in enumerate(wv_smooth):
+                if abs(wv) > WHEEL_BREAKAWAY_SPEED_THRESHOLD_MPS:
+                    t_break_w = bag.wheel_times[i]
+                    cmd_idx = (np.abs(np.array(bag.times_cmd) - t_break_w)).argmin()
+                    cmd_at_break = abs(bag.cmd_w[cmd_idx])
+                    if cmd_at_break > 0.01:
+                        breakaway_cmd_w_wheel = cmd_at_break
+                        break
+        wheel_note = {
+            "encoder": "",
+            "joint_states": " [from /joint_states, sim bag]",
+            "none": " [N/A -- no wheel-speed data]",
+        }[bag.wheel_speed_source]
+
+        valid_volts = [v for v in bag.bat_vol if v > 9.0]
+        if bag.feedback_msg_count == 0:
+            voltage_drop_str = f"N/A -- {TOPIC_FEEDBACK} not present"
+        elif len(valid_volts) >= 2:
+            voltage_drop = float(np.mean(valid_volts[:10]) - min(valid_volts))
+            voltage_drop_str = f"{voltage_drop:.2f} V"
+        else:
+            voltage_drop_str = f"N/A -- insufficient {TOPIC_BATTERY} samples"
+        peak_turn_eff_str = (f"{max(bag.joint_eff):.2f} Nm/A"
+                             if bag.joint_eff else "N/A -- joint effort unavailable")
+
+        breakaway_chassis_str = (
+            f"Target W @ breakaway: {breakaway_cmd_w:.3f} rad/s"
+            if breakaway_cmd_w is not None
+            else "N/A -- no valid post-command chassis breakaway detected"
+        )
+        breakaway_wheel_str = (
+            f"Target W @ breakaway: {breakaway_cmd_w_wheel:.3f} rad/s{wheel_note}"
+            if breakaway_cmd_w_wheel is not None
+            else f"N/A -- no valid post-command wheel breakaway detected{wheel_note}"
+        )
+
+        pose_gyro_warning = (
+            " -- ⚠ DISAGREEMENT >30 deg; inspect odometry and gyro time alignment"
+            if yaw_gyro_disagreement_deg > YAW_GYRO_DISAGREEMENT_THRESHOLD_DEG
+            else ""
+        )
+
+        steady_state_str = (
+            f"{steady_state_tracking_ratio:.1f} % (W_ss={steady_state_w:.3f} rad/s over "
+            f"[{ss_w_t0:.2f}s,{ss_w_t1:.2f}s], cmd={max_cmd_w:.3f} rad/s)"
+            if steady_state_tracking_ratio is not None
+            else steady_state_status
+        )
+        transient_str = (
+            f"mean|W|={transient_w_mean:.3f} rad/s over [{transient_t0:.2f}s,{transient_t1:.2f}s] "
+            f"-- excluded from steady-state ratio above, not itself a tracking KPI"
+            if transient_w_mean is not None
+            else transient_status
+        )
+
+        specific_rows = [
+            ("Total Angular Displacement", f"Cmd: {target_yaw_angle:.2f} rad ({math.degrees(target_yaw_angle):.1f} deg) | Act: {actual_yaw_angle:.2f} rad ({math.degrees(actual_yaw_angle):.1f} deg)", "Material: Static/Dynamic Friction"),
+            ("Odom Pose Yaw vs Integrated Gyro", f"OdomPose: {math.degrees(actual_yaw_angle):.1f} deg | Gyro: {math.degrees(gyro_yaw_angle):.1f} deg | Diff: {yaw_gyro_disagreement_deg:.1f} deg" + pose_gyro_str + pose_gyro_warning, "Data-quality cross-check; identify the odometry producer before assigning sensor fault"),
+            ("Angular Tracking Ratio (Steady-State 2-9s)", steady_state_str, "PRIMARY tracking metric (2026-07-20) -- fixed common window, replaces the whole-run integral below for reporting"),
+            ("Startup Transient (0-2s post-command)", transient_str, "Reset-first pivot anomaly and step-response behavior live here, not in the steady-state ratio"),
+            ("Angular Tracking Ratio (legacy, whole-run integral)", f"{angular_tracking_ratio:.1f} %", "DEPRECATED for reporting -- target_yaw_angle and actual_yaw_angle can come from mismatched time windows if odometry's first samples are missing; kept for continuity with older logs only"),
+            ("Rotational Slip Ratio (legacy)", f"{rotational_slip:.1f} %", "Deficit-style metric: (Cmd-Act)/Cmd*100 -- negative when overshooting"),
+            ("Breakaway Yaw Command (Chassis)", breakaway_chassis_str, "Material: Static Friction Calibration"),
+            ("Breakaway Yaw Command (Wheel)", breakaway_wheel_str, "Joint: Joint Friction (driveline vs ground)"),
+            ("Actuator Voltage Drop", voltage_drop_str, "Requires feedback plus valid battery samples"),
+            ("Peak Actuator Effort", peak_turn_eff_str, "Joint: Joint Friction, Max Force"),
+        ]
+
+    elif test_id == 5: 
+        max_eff = max(bag.joint_eff) if bag.joint_eff else 0.0
+
+        # Slip tends to peak near maximum commanded speed (highest
+        # torque demand), so cross-check wheel-surface speed vs actual
+        # chassis speed here too, same signal/logic as Test 1's slip
+        # ratio but evaluated at the steady-state max-speed segment.
+        # Max-speed slip from STEADY-STATE cruise speeds (slope-fit), same
+        # fix as Test 1: the old peak-of-differentiated wheel speed inflated
+        # to 300-400% on real encoder data. ss_wheel_v / ss_chassis_v are
+        # the ramp-free, noise-free cruise speeds computed at the top of
+        # compute_test_kpis.
+        if ss_wheel_v is not None and ss_wheel_v > 0.05 and ss_chassis_v is not None:
+            max_speed_slip = (ss_wheel_v - ss_chassis_v) / ss_wheel_v * 100.0
+            ms_wheel_disp, ms_chassis_disp = ss_wheel_v, ss_chassis_v
+        else:
+            max_speed_slip = 0.0
+            ms_wheel_disp = ss_wheel_v if ss_wheel_v is not None else 0.0
+            ms_chassis_disp = ss_chassis_v if ss_chassis_v is not None else abs(actual_v)
+        wheel_note = {
+            "encoder": "",
+            "joint_states": " [from /joint_states, sim bag]",
+            "none": " [N/A -- no wheel-speed data]",
+        }[bag.wheel_speed_source]
+
+        specific_rows = [
+            ("Steady-State Error", f"{abs(actual_v - max_cmd_v):.3f} m/s", "Joint: Velocity Target Limit"),
+            ("Sustained Actuator Effort", f"{max_eff:.2f} Nm/A", "Joint: Damping (High-speed drag)"),
+            ("Max-Speed Slip Ratio", f"{max_speed_slip:.1f} % (steady wheel {ms_wheel_disp:.3f} vs chassis {ms_chassis_disp:.3f} m/s){wheel_note}", "Joint: Damping (High-speed drag) / Material: Dynamic Friction"),
+        ]
+
+    elif test_id == 6: 
+        pose_closure = 0.0
+        pose_row_label = "Pose Closure Error (Corrected)"
+        pose_row_note = "Cross-check for physical drift"
+        if bag.pose_x and bag.pose_y:
+            p_start_x, p_start_y = bag.pose_x[0], bag.pose_y[0]
+            p_end_x, p_end_y = bag.pose_x[-1], bag.pose_y[-1]
+            pose_closure = math.hypot(p_end_x - p_start_x, p_end_y - p_start_y)
+        else:
+            # /zed/zed_node/pose is not published by this Isaac Sim graph.
+            # Reuse odom closure as an explicit fallback instead of silently
+            # reporting zero; this fallback is not an independent channel.
+            pose_closure = euclidean_dist
+            pose_row_label = "Pose Closure Error (odom fallback)"
+            pose_row_note = "No /zed/zed_node/pose in this bag -- reused /zed/zed_node/odom (sim bag)"
+
+        # Final Heading Error: was a dead placeholder string
+        # ("Check Trajectory Gap") before -- now the actual
+        # unwrap-summed yaw delta between the first and last odom
+        # sample. For a closed square path this should return to ~0.
+        # NOTE: this single-bag number is NOT yet the full UMBmark
+        # systematic/non-systematic decomposition (Borenstein & Feng
+        # 1996) -- that requires averaging this value across matched
+        # CW and CCW run pairs (systematic error has the same sign
+        # regardless of direction; non-systematic/random error
+        # doesn't). Do that comparison at the batch level once
+        # multiple Test 6 runs are aggregated.
+        final_heading_error_deg = 0.0
+        if bag.odom_yaw and len(bag.odom_yaw) > 1:
+            final_heading_error_deg = math.degrees(unwrap_delta(bag.odom_yaw[0], bag.odom_yaw[-1]))
+
+        specific_rows = [
+            ("Odom Closure Error (Kinematic)", f"{euclidean_dist:.3f} m", "Articulation: Wheel Radius"),
+            (pose_row_label, f"{pose_closure:.3f} m", pose_row_note),
+            ("Final Heading Error (Closure)", f"{final_heading_error_deg:.2f} deg", "Articulation: Track Width -- pair with CW/CCW run for UMBmark systematic-error split"),
+        ]
+
+    elif test_id == 7: 
+        roll_rate = max(np.abs(bag.imu_wx)) if bag.imu_wx else 0.0
+        step_window = yaw_step_window(bag.times_cmd, bag.cmd_w)
+        yaw_response = estimate_step_response(
+            bag.times_cmd, bag.cmd_w, bag.times_odom, bag.odom_w)
+
+        test7_target_yaw = None
+        test7_pose_yaw = None
+        test7_gyro_yaw = None
+        test7_twist_yaw = None
+        test7_pose_gyro_diff = None
+        test7_pose_gyro_ratio = None
+        test7_pose_tracking = None
+        test7_ss_pose_rate = None
+        test7_ss_gyro_rate = None
+        test7_ss_tracking = None
+        test7_window_str = "N/A -- yaw step not found"
+        if step_window is not None:
+            step_start, step_end, step_level = step_window
+            step_duration = step_end - step_start
+            test7_window_str = (
+                f"{step_duration:.3f} s yaw hold | start={step_start:.3f} s | "
+                f"end={step_end:.3f} s | W={step_level:.3f} rad/s"
+            )
+            test7_target_yaw = step_level * step_duration
+            test7_pose_yaw = pose_yaw_change_window(
+                bag.times_odom, bag.odom_yaw, step_start, step_end)
+            test7_gyro_yaw = integrate_series_window(
+                bag.times_imu, bag.imu_wz, step_start, step_end)
+            test7_twist_yaw = integrate_series_window(
+                bag.times_odom, bag.odom_w, step_start, step_end)
+            if test7_pose_yaw is not None and test7_gyro_yaw is not None:
+                test7_pose_gyro_diff = abs(abs(test7_pose_yaw) - abs(test7_gyro_yaw))
+                if abs(test7_gyro_yaw) > 1e-3:
+                    test7_pose_gyro_ratio = abs(test7_pose_yaw / test7_gyro_yaw)
+            if test7_pose_yaw is not None and abs(test7_target_yaw) > 1e-6:
+                test7_pose_tracking = abs(test7_pose_yaw / test7_target_yaw)
+
+            tail_start = max(step_start + 0.5 * step_duration, step_end - 1.0)
+            test7_ss_pose_rate = rotational_steady_state_from_yaw(
+                bag.times_odom, bag.odom_yaw, tail_start, step_end)
+            gyro_tail = [w for t, w in zip(bag.times_imu, bag.imu_wz)
+                         if tail_start <= t < step_end]
+            if gyro_tail:
+                test7_ss_gyro_rate = float(np.mean(gyro_tail))
+            if test7_ss_pose_rate is not None and abs(step_level) > 1e-6:
+                test7_ss_tracking = abs(test7_ss_pose_rate / step_level)
+
+        def _format_step_time(value):
+            resolution = yaw_response.get("resolution")
+            if value is None:
+                return "N/A"
+            if resolution is not None and value <= resolution * 1.05:
+                return f"<{resolution * 1000.0:.1f} ms (one odom sample)"
+            return f"{value:.3f} s"
+
+        yaw_response_str = (
+            f"Delay(10%): {_format_step_time(yaw_response.get('delay'))} | "
+            f"Tau(10-63%): {_format_step_time(yaw_response.get('tau'))}"
+        )
+        if yaw_response.get("status") != "ok":
+            yaw_response_str += f" | {yaw_response.get('status')}"
+        yaw_response_str += " | QUALIFIED: limited by odometry rate/gaps and sensor timestamp alignment"
+
+        def _angle_or_na(value):
+            return f"{value:.3f} rad ({math.degrees(value):.2f} deg)" if value is not None else "N/A"
+
+        pose_gyro_value = (
+            f"OdomPose: {_angle_or_na(test7_pose_yaw)} | "
+            f"Gyro: {_angle_or_na(test7_gyro_yaw)}"
+        )
+        if test7_pose_gyro_diff is not None:
+            pose_gyro_value += f" | Diff: {math.degrees(test7_pose_gyro_diff):.2f} deg"
+        if test7_pose_gyro_ratio is not None:
+            pose_gyro_value += f" | pose/gyro: {test7_pose_gyro_ratio*100:.1f}%"
+
+        tracking_value = "N/A"
+        if test7_ss_pose_rate is not None:
+            tracking_value = f"Pose slope: {test7_ss_pose_rate:.5f} rad/s"
+            if test7_ss_gyro_rate is not None:
+                tracking_value += f" | Gyro mean: {test7_ss_gyro_rate:.5f} rad/s"
+            if test7_ss_tracking is not None:
+                tracking_value += f" | Pose/cmd: {test7_ss_tracking*100:.2f}%"
+
+        specific_rows = [
+            ("Test 07 Analysis Window", test7_window_str, "Yaw-step interval only; excludes the preceding straight segment and post-stop tail"),
+            ("Angular Displacement (Yaw-Step Window)", f"Cmd: {_angle_or_na(test7_target_yaw)} | Pose: {_angle_or_na(test7_pose_yaw)} | Twist integral: {_angle_or_na(test7_twist_yaw)}", "Primary Test 07 tracking result"),
+            ("Odom Pose Yaw vs Integrated Gyro (Yaw-Step Window)", pose_gyro_value, "Data-quality cross-check on a common 5 s window"),
+            ("Steady-State Yaw Tracking (Final 1 s)", tracking_value, "Report mean ± SD across repetitions at batch level"),
+            ("Yaw Step Response (Delay / Tau)", yaw_response_str, "Rigid Body: Diagonal Inertia Matrix"),
+            ("Peak Lateral Accel Magnitude (Ay)", f"{abs(peak_ay):.3f} m/s^2", "Rigid Body: COM Height"),
+            ("Peak Roll Rate (Wx)", f"{roll_rate:.3f} rad/s", "Rigid Body: Diagonal Inertia Matrix (Ixx)")
+        ]
+
+    elif test_id == 8: 
+        # Coast phase starts where cmd_v is explicitly cut to 0 after a
+        # sustained nonzero hold (cobraflex_test_control_v5.py's Test 8
+        # publishes an explicit publish_cmd(0,0) to begin coasting).
+        # Linear-fit the velocity decay during that segment to get a
+        # deceleration figure -- that slope IS the rolling-resistance
+        # deceleration, not just "visualized in chart".
+        coast_decel = 0.0        # chassis-side (ZED odom) decay
+        wheel_coast_decel = 0.0  # wheel-side (encoder / joint_states) decay
+
+        if bag.cmd_v:
+            zero_indices = [i for i, v in enumerate(bag.cmd_v) if abs(v) < 0.01 and i > len(bag.cmd_v) * 0.2]
+            if zero_indices:
+                t_coast_start = bag.times_cmd[zero_indices[0]]
+
+                odom_idx = [i for i, t in enumerate(bag.times_odom) if t >= t_coast_start]
+                if len(odom_idx) > 5:
+                    t_c = np.array([bag.times_odom[i] for i in odom_idx])
+                    v_c = np.array([bag.odom_v[i] for i in odom_idx])
+                    if (t_c[-1] - t_c[0]) > 0.2:
+                        slope, _ = np.polyfit(t_c - t_c[0], v_c, 1)
+                        coast_decel = -slope  # positive = decelerating
+
+                if bag.wheel_v and bag.wheel_times:
+                    joint_idx = [i for i, t in enumerate(bag.wheel_times) if t >= t_coast_start]
+                    if len(joint_idx) > 5:
+                        t_wc = np.array([bag.wheel_times[i] for i in joint_idx])
+                        v_wc = np.array([bag.wheel_v[i] for i in joint_idx])
+                        if (t_wc[-1] - t_wc[0]) > 0.2:
+                            wslope, _ = np.polyfit(t_wc - t_wc[0], v_wc, 1)
+                            wheel_coast_decel = -wslope
+
+        wheel_note = {
+            "encoder": "",
+            "joint_states": " [from /joint_states, sim bag]",
+            "none": " [N/A -- no wheel-speed data]",
+        }[bag.wheel_speed_source]
+
+        specific_rows = [
+            ("Peak Initial Decel (IMU)", f"{min_ax:.3f} m/s^2", "Check for engine braking jerk"),
+            ("Rolling Resistance (Chassis Decel)", f"{coast_decel:.4f} m/s^2", "Rigid Body: Linear Damping"),
+            ("Rolling Resistance (Wheel Decel)", f"{wheel_coast_decel:.4f} m/s^2{wheel_note}", "Joint: Joint Friction"),
+            ("Velocity Decay Curve", "Visualized in Chart -- slope above is the fitted line", "Cross-check: Chassis vs Wheel decel"),
+        ]
+
+    elif test_id == 9:
+        # Weight Transfer / Pitch Test -- from the project spreadsheet's
+        # planned-but-unimplemented 9th test, targeting centerOfMass.
+        pitch_rate_peak = max(np.abs(bag.imu_wy)) if bag.imu_wy else 0.0
+        ax_swing = (max(bag.imu_ax) - min(bag.imu_ax)) if bag.imu_ax else 0.0
+        sensitivity = (pitch_rate_peak / ax_swing) if ax_swing > 0.01 else 0.0
+        specific_rows = [
+            ("Peak Pitch Rate (Wy)", f"{pitch_rate_peak:.3f} rad/s", "Reference for Dive/Squat dynamics"),
+            ("Longitudinal Accel Swing (Fwd/Rev)", f"{ax_swing:.3f} m/s^2", "Achieved pulse magnitude"),
+            ("Pitch Sensitivity (Wy / Ax)", f"{sensitivity:.4f} (rad/s)/(m/s^2)", "Rigid Body: COM Z-Offset"),
+        ]
+
+    elif test_id == 10:
+        # Baseline Noise Floor Test (new). Vehicle should be stationary
+        # the whole bag -- any nonzero reading here is sensor bias/noise,
+        # not real motion. Use this to sanity-check the other 9 tests.
+        ax_bias = float(np.mean(bag.imu_ax)) if bag.imu_ax else 0.0
+        ay_bias = float(np.mean(bag.imu_ay)) if bag.imu_ay else 0.0
+        ax_noise = float(np.std(bag.imu_ax)) if bag.imu_ax else 0.0
+        odom_drift = (max(math.hypot(x - bag.odom_x[0], y - bag.odom_y[0])
+                          for x, y in zip(bag.odom_x, bag.odom_y))
+                      if bag.odom_x else 0.0)
+        specific_rows = [
+            ("IMU Static Bias (Ax, Ay)", f"Ax: {ax_bias:.4f} | Ay: {ay_bias:.4f} m/s^2", "Subtract as offset before fitting other tests"),
+            ("IMU Noise Std-Dev (Ax)", f"{ax_noise:.4f} m/s^2", "Noise floor -- ignore signal smaller than this"),
+            ("Odom Drift While Stationary", f"{odom_drift:.3f} m", "Odometry drift/noise floor at rest"),
+        ]
+
+    return base_rows + specific_rows, bag
+
+
+# ==========================================
+# PyQt5 UI Dashboard Design
+# ==========================================
+class AnalyzerMainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.current_bag_path = None
+        self.initUI()
+        self.TEST_NAMES = TEST_NAMES
+
+    def initUI(self):
+        self.setWindowTitle('CobraFlex ROS Bag Analyzer')
+        self.resize(1650, 950)
+        
+        main_widget = QWidget()
+        self.setCentralWidget(main_widget)
+        main_layout = QHBoxLayout(main_widget)
+
+        left_panel = QVBoxLayout()
+        file_group = QGroupBox("1. Dataset Selection")
+        file_layout = QVBoxLayout()
+        self.lbl_current_bag = QLabel("No data loaded yet.")
+        self.lbl_current_bag.setWordWrap(True)
+        self.lbl_detected_test = QLabel("Detected Test Type: N/A")
+        self.lbl_detected_test.setFont(QFont("Arial", 12, QFont.Bold))
+        self.lbl_detected_test.setStyleSheet("color: #1976D2;")
+        
+        btn_load = QPushButton("Browse / Load Rosbag")
+        btn_load.clicked.connect(self.load_bag)
+        
+        file_layout.addWidget(btn_load)
+        file_layout.addWidget(self.lbl_current_bag)
+        file_layout.addWidget(self.lbl_detected_test)
+        file_group.setLayout(file_layout)
+        
+        result_group = QGroupBox("2. Extracted Kinematics")
+        result_layout = QVBoxLayout()
+        
+        # Add Odom vs Pose explanation label
+        lbl_info = QLabel(
+            "NOTE: /zed/zed_node/odom is the odometry topic. In Isaac Sim it is produced by "
+            "isaac_compute_odometry and is not ZED VIO. /zed/zed_node/pose is a separate "
+            "ZED pose/SLAM channel only when that topic is actually recorded."
+        )
+        lbl_info.setStyleSheet("color: #555555; font-size: 11px;")
+        result_layout.addWidget(lbl_info)
+        
+        self.table_results = QTableWidget(0, 3)
+        self.table_results.setHorizontalHeaderLabels(["Analysis Parameters", "Extracted Value", "Target Isaac Parameters"])
+        self.table_results.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.table_results.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        self.table_results.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.table_results.setAlternatingRowColors(True)
+        
+        result_layout.addWidget(self.table_results)
+        result_group.setLayout(result_layout)
+        
+        left_panel.addWidget(file_group, 1)
+        left_panel.addWidget(result_group, 5)
+        
+        right_panel = QVBoxLayout()
+        graph_group = QGroupBox("3. Dynamic Response Visualization")
+        graph_layout = QVBoxLayout()
+        
+        self.figure = Figure(figsize=(10, 12)) 
+        self.canvas = FigureCanvas(self.figure)
+        
+        graph_layout.addWidget(self.canvas)
+        graph_group.setLayout(graph_layout)
+        right_panel.addWidget(graph_group)
+        
+        main_layout.addLayout(left_panel, 2)
+        main_layout.addLayout(right_panel, 3)
+
+    def load_bag(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.ShowDirsOnly
+        start_dir = BAG_DIR_DEFAULT if os.path.exists(BAG_DIR_DEFAULT) else os.path.expanduser("~")
+        
+        bag_dir = QFileDialog.getExistingDirectory(self, "Select Rosbag Directory", start_dir, options=options)
+        
+        if bag_dir:
+            if not os.path.exists(os.path.join(bag_dir, 'metadata.yaml')):
+                QMessageBox.critical(self, "Selection Error", "Invalid Rosbag directory.\nPlease select the directory containing 'metadata.yaml'.")
+                return
+
+            self.current_bag_path = bag_dir
+            folder_name = os.path.basename(bag_dir)
+            self.lbl_current_bag.setText(f"Loaded: {folder_name}")
+            
+            test_id = self.identify_test_id(folder_name)
+            test_name = self.TEST_NAMES.get(test_id, "Unknown Test Profile")
+            self.lbl_detected_test.setText(f"No.{test_id} - {test_name}")
+            
+            self.execute_analysis(test_id)
+
+    def identify_test_id(self, folder_name):
+        return identify_test_id(folder_name)
+
+    def populate_table(self, data_rows):
+        self.table_results.setRowCount(0)
+        for i, (metric, value, param) in enumerate(data_rows):
+            self.table_results.insertRow(i)
+            self.table_results.setItem(i, 0, QTableWidgetItem(str(metric)))
+            val_item = QTableWidgetItem(str(value))
+            val_item.setFont(QFont("Arial", 10, QFont.Bold))
+            if str(metric) == "Data Completeness Check" and str(value).startswith("⚠"):
+                val_item.setForeground(QColor("red"))
+            else:
+                val_item.setForeground(QColor("black"))
+            self.table_results.setItem(i, 1, val_item)
+            param_item = QTableWidgetItem(str(param))
+            param_item.setForeground(QColor("#1976D2")) 
+            self.table_results.setItem(i, 2, param_item)
+
+    # ==========================================
+    # Plotting Engine
+    # ==========================================
+    def plot_universal_graphs(self, bag, title_v="Velocity Response", title_a="Acceleration Response"):
+        self.figure.clear()
+        
+        # 1. 2D Trajectory
+        ax1 = self.figure.add_subplot(311)
+        if bag.odom_x and bag.odom_y:
+            ax1.plot(bag.odom_x, bag.odom_y, 'b-', label='Odom Trajectory ((0,0) Aligned)')
+            ax1.plot(bag.odom_x[0], bag.odom_y[0], 'go', label='Start')
+            ax1.plot(bag.odom_x[-1], bag.odom_y[-1], 'ro', label='End')
+        if bag.pose_x and bag.pose_y:
+            ax1.plot(bag.pose_x, bag.pose_y, 'c--', label='ZED Pose/SLAM (when recorded)')
+        ax1.set_title("2D Map Trajectory (m)", fontweight='bold')
+        ax1.set_ylabel("Y (m)"); ax1.axis('equal'); ax1.grid(True, linestyle='--'); ax1.legend()
+        
+        # 2. Velocity-Time
+        ax2 = self.figure.add_subplot(312)
+        v_smooth = smooth_data(bag.odom_v, 9)
+        w_smooth = smooth_data(bag.odom_w, 9)
+        
+        if bag.times_cmd and bag.cmd_v:
+            ax2.step(bag.times_cmd, bag.cmd_v, 'purple', linestyle='-.', label='Target Linear V', where='post')
+            ax2.step(bag.times_cmd, bag.cmd_w, 'cyan', linestyle=':', label='Target Angular W', where='post')
+            
+        if bag.times_odom:
+            ax2.plot(bag.times_odom, v_smooth, 'b-', label='Actual Linear V (m/s)')
+            w_max_abs = max(np.abs(bag.odom_w)) if bag.odom_w else 0
+            if w_max_abs > 0.1:
+                ax2_w = ax2.twinx()
+                ax2_w.plot(bag.times_odom, w_smooth, 'g-', label='Actual Angular W (rad/s)')
+                ax2_w.set_ylabel("Yaw Rate (rad/s)", color='g')
+                ax2_w.tick_params(axis='y', labelcolor='g')
+            else:
+                ax2.plot(bag.times_odom, w_smooth, 'g-', label='Actual Angular W (rad/s)')
+            
+        ax2.set_title(title_v, fontweight='bold'); ax2.set_ylabel("Velocity (m/s)", color='b')
+        ax2.grid(True, linestyle='--'); ax2.legend(loc='upper left')
+        
+        # 3. Accel-Time
+        ax3 = self.figure.add_subplot(313, sharex=ax2)
+        if bag.times_imu and bag.imu_ax:
+            ax3.plot(bag.times_imu, smooth_data(bag.imu_ax, 11), 'r-', label='Longitudinal Accel (Ax)')
+            ax3.plot(bag.times_imu, smooth_data(bag.imu_ay, 11), 'm-', label='Lateral Accel (Ay)')
+        ax3.set_title(title_a, fontweight='bold'); ax3.set_xlabel("Time (s)"); ax3.set_ylabel("Accel (m/s^2)")
+        ax3.grid(True, linestyle='--'); ax3.legend(loc='upper right')
+        
+        self.figure.tight_layout(pad=2.0)
+        self.canvas.draw()
+
+    # ==========================================
+    # Smart Data Extractor & Table Builder
+    # ==========================================
+    def execute_analysis(self, test_id):
+        try:
+            rows, bag = compute_test_kpis(self.current_bag_path, test_id)
+        except ValueError as e:
+            QMessageBox.warning(self, "Warning", str(e))
+            return
+        self.populate_table(rows)
+        self.plot_universal_graphs(bag)
+
+def main():
+    app = QApplication(sys.argv)
+    app.setStyle('Fusion')
+    window = AnalyzerMainWindow()
+    window.show()
+    sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    main()
