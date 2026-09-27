@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+
+# ROS 2 / colcon
+build/
+install/
+log/
+
+# Raw ROS bag data (kept in the project/institutional archive)
+*.mcap
+*.db3
+*.bag
+rosbag2_*/
+
+# Analysis/runtime output
+*.log
+*.tmp
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -144,6 +144,7 @@ Historical development files, obsolete USD variants, and large raw ROS bag recor
 - ROS 2
 - `rosbag2`
 - MCAP support where required by the analysis workflow
+- Git LFS for the formal USD assets
 
 ### Environment Generation
 
@@ -178,7 +179,7 @@ assets/scenes/ADMIT14_Integrated_Scene_v1.usd
 
 These files define the formal delivered baseline.
 
-Diagnostic or experimental USD files must be clearly separated and must **not** overwrite the `v1` assets.
+The binary `.usd` assets are tracked with **Git LFS**. This is required because the integrated scene exceeds GitHub's normal per-file Git limit. Diagnostic or experimental USD files must be clearly separated and must **not** overwrite the `v1` assets.
 
 ---
 
@@ -186,9 +187,13 @@ Diagnostic or experimental USD files must be clearly separated and must **not** 
 
 ### 1. Clone the repository
 
+Install and initialise Git LFS before cloning or pulling the formal USD assets.
+
 ```bash
+git lfs install
 git clone <repository-url>
 cd IsaacSim-ROS2-Autonomous-scaled-vehicles
+git lfs pull
 ```
 
 ### 2. Source ROS 2
