@@ -22,6 +22,8 @@ ros2/
 
 GUI-based ROS 2 test controller and recorder.
 
+Detailed test-profile logic and GUI parameter definitions are documented in [`control/README.md`](control/README.md).
+
 It publishes `/cmd_vel`, supports the thesis test profiles, records selected ROS 2 topics with rosbag2, uses an advancing `/clock` for simulation-timed runs, and includes recorder-readiness and post-recording coverage checks.
 
 Run it from a sourced ROS 2 environment:
