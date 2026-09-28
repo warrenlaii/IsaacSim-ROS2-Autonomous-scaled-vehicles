@@ -12,6 +12,14 @@ The machine-readable handover configuration is:
 
 > **Scope:** this document describes the frozen thesis baseline. Diagnostic ablations, including the 0.08 N.m Max Drive Force condition and matched TGS tests, are not part of the delivered baseline.
 
+<p align="center">
+  <img src="images/cobraflex_vehicle_in_scene.png"
+       alt="CobraFlex 1:14 vehicle model in the integrated Isaac Sim road environment"
+       width="900">
+</p>
+
+<p align="center"><em>CobraFlex 1:14 vehicle model in the integrated Isaac Sim road environment.</em></p>
+
 ## Model architecture
 
 The imported OpenUSD vehicle is implemented as a **PhysX reduced-coordinate articulation** rather than through the PhysX Vehicle SDK.
@@ -201,6 +209,14 @@ The thesis treated these coefficients as tunable contact parameters. Friction sw
 
 The implemented vehicle model sits inside the following simulation path:
 
+<p align="center">
+  <img src="images/ros2_isaacsim_command_to_state_flow.png"
+       alt="ROS 2 to Isaac Sim command-to-state and state-feedback flow"
+       width="1200">
+</p>
+
+<p align="center"><em>ROS 2 command and state-feedback path through the CobraFlex articulation and PhysX simulation.</em></p>
+
 | Stage | Function | Implementation |
 | ---: | --- | --- |
 | 1 | Command ingress | ROS 2 bridge receives `(v, omega)` from `/cmd_vel` |
@@ -211,18 +227,6 @@ The implemented vehicle model sits inside the following simulation path:
 | 6 | State / sensor readout | Chassis pose/twist, joint states, IMU quantities, and diagnostic contact information are obtained or derived |
 | 7 | ROS 2 publication + recording | Configured streams are published in simulation time and recorded with rosbag2 for offline validation |
 
-```mermaid
-flowchart LR
-    CMD[/ROS 2 /cmd_vel/]
-    IK[Differential-drive<br/>wheel targets]
-    DRIVE[4 velocity-mode<br/>Articulation Joint Drives]
-    PHYSX[PhysX articulation +<br/>wheel-ground contact]
-    STATE[240 Hz physics state]
-    READOUT[State / joint / sensor<br/>readout]
-    ROS[ROS 2 publication<br/>and rosbag2]
-
-    CMD --> IK --> DRIVE --> PHYSX --> STATE --> READOUT --> ROS
-```
 
 ## Why an articulation model?
 
