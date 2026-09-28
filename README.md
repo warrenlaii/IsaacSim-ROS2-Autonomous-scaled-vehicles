@@ -77,6 +77,14 @@ See [`docs/vehicle_model.md`](docs/vehicle_model.md) for the articulation struct
 
 ---
 
+## Calibration and Diagnostics
+
+The frozen baseline was selected through a measurement-first calibration and diagnostic workflow rather than by fitting one manoeuvre. Parameter sweeps covered inertia, Joint Drive damping, Max Drive Force, friction, contact/numerical settings, and solver behaviour. Higher-rate in-place rotation also exposed distinct Low and High response branches that are reported separately.
+
+See [`docs/calibration_and_diagnostics.md`](docs/calibration_and_diagnostics.md) for the parameter-sensitivity evidence, branch diagnostics, Max Drive Force sweep, matched PGS-TGS comparison, and final baseline-selection rationale.
+
+---
+
 ## Road Environment
 
 The scaled road environment was created in **MathWorks RoadRunner** and transferred to Isaac Sim through the OpenUSD/OpenDRIVE workflow.
@@ -157,6 +165,7 @@ IsaacSim-ROS2-Autonomous-scaled-vehicles/
 │
 └── docs/
     ├── vehicle_model.md
+    ├── calibration_and_diagnostics.md
     ├── data_provenance.md
     └── images/
 ```
