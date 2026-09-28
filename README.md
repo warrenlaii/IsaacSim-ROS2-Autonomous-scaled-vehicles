@@ -174,6 +174,7 @@ IsaacSim-ROS2-Autonomous-scaled-vehicles/
 └── docs/
     ├── vehicle_model.md
     ├── calibration_and_diagnostics.md
+    ├── ros2_interface_architecture.md
     ├── data_provenance.md
     └── images/
 ```
@@ -308,6 +309,8 @@ The physics simulation runs at **240 Hz**. The state/TF/joint publication chain 
 
 The verified Lane Camera topic names and other core handover topics are recorded in `config/ros2_topics.yaml`. Supplementary sensor namespaces remain platform dependent.
 
+For the OmniGraph execution domains, timing model, topic semantics, duplicate-publication correction, verification evidence, and RL signal boundary, see [`docs/ros2_interface_architecture.md`](docs/ros2_interface_architecture.md).
+
 ---
 
 ## Final Simulation Baseline
@@ -351,8 +354,8 @@ The platform was evaluated against the physical CobraFlex vehicle and through RO
 | Straight-line vehicle response | Evaluated against physical vehicle |
 | Curved-path response | Evaluated; remaining Sim-to-Real gap documented |
 | In-place rotation | Evaluated; branch/solver/contact behaviour remains documented |
-| RL environment interface | Delivered |
-| RL policy training | Outside thesis scope |
+| ROS 2 interface for future RL integration | Delivered and verified within the documented interface scope |
+| Complete RL environment / policy training | Outside thesis scope |
 
 The final validation showed that straight-line behaviour can be reproduced closely in the tested range, while curved-path and in-place rotation behaviour retain larger discrepancies. The rotation diagnostics also revealed branch-dependent simulation behaviour under specific tested conditions.
 

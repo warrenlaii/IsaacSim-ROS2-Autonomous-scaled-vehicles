@@ -2,6 +2,12 @@
 
 This directory contains the maintained Python tools used to run CobraFlex test profiles, record ROS 2 data, and analyse recorded rosbag2 datasets for the thesis handover.
 
+## Interface architecture
+
+For the Isaac Sim OmniGraph execution domains, `/clock` and state-publication timing, topic semantics, TF architecture, interface verification evidence, and RL integration boundary, see [`../docs/ros2_interface_architecture.md`](../docs/ros2_interface_architecture.md).
+
+This README remains focused on the maintained controller and analysis tools.
+
 ## Structure
 
 ```text

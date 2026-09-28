@@ -23,6 +23,7 @@ The repository has not yet been tagged as `v1.0.0-thesis`.
 - `docs/data_provenance.md` defining historical data/tool and map-version boundaries.
 - `docs/vehicle_model.md` documenting the CobraFlex articulation structure, measured/inherited mass-property provenance, joint-drive configuration, physics baseline, and command-to-measurement path.
 - `docs/calibration_and_diagnostics.md` documenting the measurement-first calibration workflow, parameter-sensitivity evidence, response-branch diagnostics, Max Drive Force sweep, and matched PGS-TGS solver comparison.
+- `docs/ros2_interface_architecture.md` documenting the OmniGraph execution domains, simulation-time contract, topic semantics, duplicate-publication correction, interface acceptance evidence, and RL integration boundary.
 - Vehicle-model scene image and ROS 2-to-Isaac Sim command/state-flow figure in the vehicle-model documentation.
 
 ### Changed
@@ -35,6 +36,7 @@ The repository has not yet been tagged as `v1.0.0-thesis`.
 - Aligned the repository thesis title with the final submitted thesis title.
 - Clarified that the 2026-08-16 OpenDRIVE repair postdates the frozen dynamics-validation baseline.
 - Clarified Test 04 branch-conditioned reporting and the complete-scene result boundary.
+- Aligned the root README RL interface wording with the thesis scope: the ROS 2 interface is delivered, while a complete RL environment and policy training remain outside scope.
 
 ### Removed
 
