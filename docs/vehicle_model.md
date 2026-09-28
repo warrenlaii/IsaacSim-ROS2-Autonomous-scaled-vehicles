@@ -20,6 +20,26 @@ The machine-readable handover configuration is:
 
 <p align="center"><em>CobraFlex 1:14 vehicle model in the integrated Isaac Sim road environment.</em></p>
 
+## Upstream platform and model provenance
+
+The CobraFlex platform used in this thesis was not created from scratch within this repository.
+
+The physical CobraFlex baseline, its CAD model, and the initial ROS 2 bring-up were provided by **Samuel Sanchez** in:
+
+[`snchz46/Waveshare-Cobra-Flex-ROS2-Autonomous-Car`](https://github.com/snchz46/Waveshare-Cobra-Flex-ROS2-Autonomous-Car)
+
+The thesis uses that platform as its starting point and extends it through:
+
+- conversion and restructuring of the vehicle geometry as an Isaac Sim / OpenUSD asset;
+- PhysX reduced-coordinate articulation and four-wheel joint-drive configuration;
+- measurement-grounded mass and centre-of-gravity inputs;
+- calibration and diagnostic studies for inertia, drive, friction, contact, solver, and timestep settings;
+- integration with the RoadRunner environment;
+- ROS 2 timing, state, TF, sensor, and diagnostic verification;
+- Sim-to-Real validation against the physical CobraFlex.
+
+The upstream repository is MIT licensed. Its original copyright and license terms remain applicable to material derived from that upstream work. The licensing of this thesis handover repository itself has not yet been finalised.
+
 ## Model architecture
 
 The imported OpenUSD vehicle is implemented as a **PhysX reduced-coordinate articulation** rather than through the PhysX Vehicle SDK.

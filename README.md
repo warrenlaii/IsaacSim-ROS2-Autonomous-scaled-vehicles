@@ -83,6 +83,8 @@ The CobraFlex simulation uses a **PhysX reduced-coordinate articulation** with f
 
 See [`docs/vehicle_model.md`](docs/vehicle_model.md) for the articulation structure, mass-property provenance, joint-drive configuration, complete physics baseline, wheel-target mapping, and command-to-measurement pipeline.
 
+**Upstream vehicle-platform provenance:** the CobraFlex hardware platform, CAD model, and initial ROS 2 bring-up used as the starting point for this thesis were provided by Samuel Sanchez in [`snchz46/Waveshare-Cobra-Flex-ROS2-Autonomous-Car`](https://github.com/snchz46/Waveshare-Cobra-Flex-ROS2-Autonomous-Car). This repository extends that platform with the Isaac Sim/OpenUSD articulation model, RoadRunner environment, calibration and diagnostics, ROS 2 interface verification, and thesis-validation workflow.
+
 ---
 
 ## Calibration and Diagnostics
@@ -239,7 +241,7 @@ Install and initialise Git LFS before cloning or pulling the formal USD assets.
 
 ```bash
 git lfs install
-git clone <repository-url>
+git clone https://github.com/warrenlaii/IsaacSim-ROS2-Autonomous-scaled-vehicles.git
 cd IsaacSim-ROS2-Autonomous-scaled-vehicles
 git lfs pull
 ```

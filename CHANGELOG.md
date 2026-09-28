@@ -4,7 +4,10 @@ This file records notable changes to the **handover repository**. It is not the 
 
 The repository has not yet been tagged as `v1.0.0-thesis`.
 
-## Unreleased — thesis handover preparation
+## Unreleased
+
+- Replaced the Quick Start clone placeholder with the public repository clone URL.
+- Added explicit upstream CobraFlex platform/CAD/ROS 2 provenance to Samuel Sanchez's `snchz46/Waveshare-Cobra-Flex-ROS2-Autonomous-Car` repository. — thesis handover preparation
 
 ### Added
 
