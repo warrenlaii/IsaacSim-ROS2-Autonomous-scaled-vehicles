@@ -21,30 +21,13 @@ The architecture separates:
 - physics-synchronised wheel-contact diagnostics;
 - TF completion through robot_state_publisher.
 
-~~~mermaid
-flowchart LR
-    CLIENT[ROS 2 controller or future RL client]
-    CMD[/cmd_vel]
-    MAIN[ActionGraph_CobraFlex_ADMIT<br/>command processing + wheel actuation<br/>render-dependent sensors]
-    WHEELS[Four wheel targets<br/>FL · RL · FR · RR]
+<p align="center">
+  <img src="images/ros2_command_execution_architecture.png"
+       alt="ROS 2 command and execution architecture for the CobraFlex thesis baseline"
+       width="1000">
+</p>
 
-    PHYS[Physics step<br/>240 Hz]
-    CLOCK[/clock<br/>240 Hz]
-    GATE[Gate step = 4]
-    ODOM[ActionGraph_ROS_Odom_Physics<br/>odometry + joint state + raw TF]
-    STATE[/odom_truth<br/>/zed/zed_node/odom<br/>/joint_states<br/>raw odom → base_footprint TF]
-    RSP[robot_state_publisher]
-    TF[wheel TF subtree]
-
-    CONTACT[ActionGraph_Wheel_Contact_ROS<br/>gate(4)]
-    DIAG[wheel-contact diagnostics<br/>60 Hz]
-
-    CLIENT --> CMD --> MAIN --> WHEELS
-    PHYS --> CLOCK
-    PHYS --> GATE --> ODOM --> STATE
-    STATE --> RSP --> TF
-    PHYS --> CONTACT --> DIAG
-~~~
+<p align="center"><em>ROS 2 command and execution architecture for the CobraFlex thesis baseline.</em></p>
 
 The timing domains are deliberately different. Command processing and render-dependent sensors are associated with playback/render execution, while vehicle-state publication is synchronised with physics updates.
 
