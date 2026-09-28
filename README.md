@@ -2,6 +2,13 @@
 
 **ROS 2-Compatible Digital Twin Platform for a 1:14 Scale Autonomous Vehicle**
 
+[![Release Acceptance](https://github.com/warrenlaii/IsaacSim-ROS2-Autonomous-scaled-vehicles/actions/workflows/release-acceptance.yml/badge.svg)](https://github.com/warrenlaii/IsaacSim-ROS2-Autonomous-scaled-vehicles/actions/workflows/release-acceptance.yml)
+![Isaac Sim](https://img.shields.io/badge/Isaac%20Sim-6.0.0-76B900)
+![ROS 2](https://img.shields.io/badge/ROS%202-Jazzy-22314E)
+![Ubuntu](https://img.shields.io/badge/Ubuntu-24.04-E95420)
+![Python](https://img.shields.io/badge/Python-3.12-3776AB)
+![OpenUSD / PhysX](https://img.shields.io/badge/OpenUSD%20%2F%20PhysX-Thesis%20Baseline-555555)
+
 A research platform built with **NVIDIA Isaac Sim, PhysX, OpenUSD, MathWorks RoadRunner, and ROS 2** for scaled autonomous-vehicle simulation, Sim-to-Real evaluation, and future learning-based control research.
 
 **Start here:** [Operational handover](HANDOVER.md) · [Processed validation](validation/README.md) · [Change log](CHANGELOG.md)
@@ -11,6 +18,32 @@ A research platform built with **NVIDIA Isaac Sim, PhysX, OpenUSD, MathWorks Roa
        alt="CobraFlex vehicle in the Isaac Sim RoadRunner environment"
        width="900">
 </p>
+
+---
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [System Architecture](#system-architecture)
+- [Vehicle Model](#vehicle-model)
+- [Calibration and Diagnostics](#calibration-and-diagnostics)
+- [Road Environment](#road-environment)
+- [Repository Layout](#repository-layout)
+- [Requirements](#requirements)
+- [Formal Delivery Assets](#formal-delivery-assets)
+- [Quick Start](#quick-start)
+- [ROS 2 Interface](#ros-2-interface)
+- [Final Simulation Baseline](#final-simulation-baseline)
+- [Validation Summary](#validation-summary)
+- [Known Limitations](#known-limitations)
+- [Data and Reproducibility](#data-and-reproducibility)
+- [Handover Rules](#handover-rules)
+- [Handover Acceptance Test](#handover-acceptance-test)
+- [Thesis](#thesis)
+- [Citation](#citation)
+- [License](#license)
+- [Thesis Baseline Release](#thesis-baseline-release)
 
 ---
 
