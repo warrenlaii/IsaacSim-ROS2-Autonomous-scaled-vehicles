@@ -23,27 +23,34 @@ A research platform built with **NVIDIA Isaac Sim, PhysX, OpenUSD, MathWorks Roa
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Key Features](#key-features)
-- [System Architecture](#system-architecture)
-- [Vehicle Model](#vehicle-model)
-- [Calibration and Diagnostics](#calibration-and-diagnostics)
-- [Road Environment](#road-environment)
-- [Repository Layout](#repository-layout)
-- [Requirements](#requirements)
-- [Formal Delivery Assets](#formal-delivery-assets)
-- [Quick Start](#quick-start)
-- [ROS 2 Interface](#ros-2-interface)
-- [Final Simulation Baseline](#final-simulation-baseline)
-- [Validation Summary](#validation-summary)
-- [Known Limitations](#known-limitations)
-- [Data and Reproducibility](#data-and-reproducibility)
-- [Handover Rules](#handover-rules)
-- [Handover Acceptance Test](#handover-acceptance-test)
-- [Thesis](#thesis)
-- [Citation](#citation)
-- [License](#license)
-- [Thesis Baseline Release](#thesis-baseline-release)
+- **Project Overview**
+  - [Overview](#overview)
+  - [Key Features](#key-features)
+  - [System Architecture](#system-architecture)
+
+- **Digital Twin Platform**
+  - [Vehicle Model](#vehicle-model)
+  - [Calibration and Diagnostics](#calibration-and-diagnostics)
+  - [Road Environment](#road-environment)
+  - [ROS 2 Interface](#ros-2-interface)
+  - [Final Simulation Baseline](#final-simulation-baseline)
+
+- **Setup, Validation and Handover**
+  - [Repository Layout](#repository-layout)
+  - [Requirements](#requirements)
+  - [Formal Delivery Assets](#formal-delivery-assets)
+  - [Quick Start](#quick-start)
+  - [Validation Summary](#validation-summary)
+  - [Known Limitations](#known-limitations)
+  - [Data and Reproducibility](#data-and-reproducibility)
+  - [Handover Rules](#handover-rules)
+  - [Handover Acceptance Test](#handover-acceptance-test)
+
+- **Thesis and Repository Information**
+  - [Thesis](#thesis)
+  - [Citation](#citation)
+  - [License](#license)
+  - [Thesis Baseline Release](#thesis-baseline-release)
 
 ---
 
