@@ -1,6 +1,6 @@
 # CobraFlex Digital Twin in Isaac Sim
 
-**ROS 2-Compatible Digital Twin Platform for a 1:14 Scale Autonomous Vehicle**
+**ROS 2-Compatible Digital Twin Platform for a 1:14 Scale Autonomous Vehicle with a Standards-Informed Road Environment**
 
 [![Release Acceptance](https://github.com/warrenlaii/IsaacSim-ROS2-Autonomous-scaled-vehicles/actions/workflows/release-acceptance.yml/badge.svg)](https://github.com/warrenlaii/IsaacSim-ROS2-Autonomous-scaled-vehicles/actions/workflows/release-acceptance.yml)
 ![Isaac Sim](https://img.shields.io/badge/Isaac%20Sim-6.0.0-76B900)
@@ -154,6 +154,8 @@ It includes:
        alt="Overview of the scaled RoadRunner environment"
        width="850">
 </p>
+
+The environment is **standards-informed**, with documented design references, authored dimensions, ODD boundaries, and geometry limitations. See [`roadrunner/README.md`](roadrunner/README.md) for the complete road-environment handover and standards traceability.
 
 The final road-network exchange files are provided under `roadrunner/`, including the versioned OpenDRIVE and GeoJSON files and the Junction 63 repair record.
 
