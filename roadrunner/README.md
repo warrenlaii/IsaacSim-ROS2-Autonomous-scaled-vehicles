@@ -18,6 +18,34 @@ The road network is divided into three functional zones:
 
 The final network was designed as a compact indoor research environment for a 1:14 skid-steer vehicle. It combines road geometry, markings, intersections, parking features, and machine-readable connectivity in one reusable test environment.
 
+## Visual Overview
+
+The following views illustrate representative elements of the delivered road environment, including the bus-stop area, the central signal-controlled intersection, and the parking-area access.
+
+<p align="center">
+  <img src="../docs/images/roadrunner_map_busstation.png"
+       alt="Bus-stop area in the CobraFlex RoadRunner environment"
+       width="850">
+</p>
+
+<p align="center"><em>Bus-stop area with road markings, sidewalk, roadside signs, and street furniture.</em></p>
+
+<p align="center">
+  <img src="../docs/images/roadrunner_map_cross.png"
+       alt="Central signal-controlled intersection in the CobraFlex RoadRunner environment"
+       width="850">
+</p>
+
+<p align="center"><em>Central signal-controlled intersection with lane markings and pedestrian infrastructure.</em></p>
+
+<p align="center">
+  <img src="../docs/images/roadrunner_map_parking1.png"
+       alt="Parking-area access and central urban network in the CobraFlex RoadRunner environment"
+       width="850">
+</p>
+
+<p align="center"><em>Parking-area access connected to the central urban road network.</em></p>
+
 ## Design references
 
 The road environment uses several standards and guidelines for different purposes. They should not be interpreted as interchangeable or as a single compliance claim.
