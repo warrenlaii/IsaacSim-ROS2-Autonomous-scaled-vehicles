@@ -21,6 +21,7 @@ The repository has not yet been tagged as `v1.0.0-thesis`.
 - GitHub Actions clean-clone/static release-acceptance workflow.
 - `ros2/requirements-analysis.txt` for the maintained offline analysis and regression-test dependencies.
 - `docs/data_provenance.md` defining historical data/tool and map-version boundaries.
+- `docs/vehicle_model.md` documenting the CobraFlex articulation structure, measured/inherited mass-property provenance, joint-drive configuration, physics baseline, and command-to-measurement path.
 
 ### Changed
 

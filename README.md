@@ -69,6 +69,14 @@ The main layers are:
 
 ---
 
+## Vehicle Model
+
+The CobraFlex simulation uses a **PhysX reduced-coordinate articulation** with four revolute wheel joints and differential wheel actuation. The final thesis model uses measured mass and measurement-derived centre-of-gravity information, while the diagonal inertia components remain inherited modelling assumptions.
+
+See [`docs/vehicle_model.md`](docs/vehicle_model.md) for the articulation structure, mass-property provenance, joint-drive configuration, complete physics baseline, wheel-target mapping, and command-to-measurement pipeline.
+
+---
+
 ## Road Environment
 
 The scaled road environment was created in **MathWorks RoadRunner** and transferred to Isaac Sim through the OpenUSD/OpenDRIVE workflow.
@@ -148,6 +156,7 @@ IsaacSim-ROS2-Autonomous-scaled-vehicles/
 │   └── ros2_acceptance.csv
 │
 └── docs/
+    ├── vehicle_model.md
     ├── data_provenance.md
     └── images/
 ```
