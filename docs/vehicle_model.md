@@ -13,9 +13,9 @@ The machine-readable handover configuration is:
 > **Scope:** this document describes the frozen thesis baseline. Diagnostic ablations, including the 0.08 N.m Max Drive Force condition and matched TGS tests, are not part of the delivered baseline.
 
 <p align="center">
-  <img src="images/cobraflex_vehicle_in_scene.png"
+  <img src="images/cobraflex_vehicle_closeup.jpg"
        alt="CobraFlex 1:14 vehicle model in the integrated Isaac Sim road environment"
-       width="900">
+       width="700">
 </p>
 
 <p align="center"><em>CobraFlex 1:14 vehicle model in the integrated Isaac Sim road environment.</em></p>

@@ -73,6 +73,14 @@ The main layers are:
 
 The CobraFlex simulation uses a **PhysX reduced-coordinate articulation** with four revolute wheel joints and differential wheel actuation. The final thesis model uses measured mass and measurement-derived centre-of-gravity information, while the diagonal inertia components remain inherited modelling assumptions.
 
+<p align="center">
+  <img src="docs/images/cobraflex_vehicle_closeup.jpg"
+       alt="Close-up of the CobraFlex 1:14 vehicle model in the integrated Isaac Sim road environment"
+       width="650">
+</p>
+
+<p align="center"><em>CobraFlex 1:14 vehicle model in the integrated Isaac Sim road environment.</em></p>
+
 See [`docs/vehicle_model.md`](docs/vehicle_model.md) for the articulation structure, mass-property provenance, joint-drive configuration, complete physics baseline, wheel-target mapping, and command-to-measurement pipeline.
 
 ---
