@@ -453,7 +453,7 @@ The thesis focuses on digital-twin environment generation, vehicle-model calibra
 If this repository or the associated work is used in academic research, please cite the thesis:
 
 ```bibtex
-@mastersthesis{lai2026cobraflex,
+@mastersthesis{lai2026scaledvehicledigitaltwin,
   author = {Lai, Hwa-Luen},
   title  = {Design and Implementation of a ROS 2-Compatible Digital Twin Platform for 1:14 Scale Autonomous Vehicles for Reinforcement Learning},
   school = {Hochschule Esslingen},
