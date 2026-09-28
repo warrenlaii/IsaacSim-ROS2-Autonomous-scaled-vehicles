@@ -294,7 +294,8 @@ The formal thesis baseline uses the following core configuration.
 | Physics rate | 240 Hz |
 | Dynamics | CPU dynamics / GPU Dynamics OFF |
 | Solver | PGS |
-| Articulation iterations | 32 position / 1 velocity |
+| Scene minimum iterations | 32 position / 1 velocity |
+| Articulation iterations | 128 position / 1 velocity |
 | Vehicle mass | 3.50 kg |
 | Wheelbase | 0.154 m |
 | Wheel-centre separation | 0.153 m |

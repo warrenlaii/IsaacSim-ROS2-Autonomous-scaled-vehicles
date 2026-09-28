@@ -6,8 +6,11 @@ baseline:
   gpu_dynamics: false
   solver: PGS
   broadphase: GPU
-  articulation_iterations:
+  scene_minimum_iterations:
     position: 32
+    velocity: 1
+  articulation_iterations:
+    position: 128
     velocity: 1
   joint_drive:
     type: force

@@ -110,7 +110,8 @@ The principal frozen values are:
 | GPU Dynamics | OFF |
 | Solver | PGS |
 | Broadphase | GPU |
-| Articulation iterations | 32 position / 1 velocity |
+| Scene minimum iterations | 32 position / 1 velocity |
+| Articulation iterations | 128 position / 1 velocity |
 | Vehicle mass | 3.5 kg |
 | Wheelbase | 0.154 m |
 | Wheel-centre separation | 0.153 m |
